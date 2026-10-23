@@ -85,7 +85,8 @@ const en = {
       { title: 'Careful', text: 'An engineer’s eye for detail.' },
     ],
     factsLabel: 'Quick facts about Mojtaba',
-    photoAlt: 'Portrait of Mojtaba Maleki',
+    photoAlt: 'Mojtaba Maleki talking with a small group',
+    presentingAlt: 'Mojtaba presenting a project on a large screen',
     facts: [
       ['Day job', 'Software engineer, The IT Solutions'],
       ['Studied', 'Computer Science, University of Debrecen'],
@@ -243,7 +244,8 @@ const hu: Dict = {
       { title: 'Precíz', text: 'Mérnöki figyelem a részletekre.' },
     ],
     factsLabel: 'Röviden Mojtabáról',
-    photoAlt: 'Mojtaba Maleki portréja',
+    photoAlt: 'Mojtaba Maleki egy kisebb csoporthoz beszél',
+    presentingAlt: 'Mojtaba egy projektet mutat be egy nagy képernyőn',
     facts: [
       ['Munkahely', 'Szoftvermérnök, The IT Solutions'],
       ['Tanulmányok', 'Informatika, Debreceni Egyetem'],

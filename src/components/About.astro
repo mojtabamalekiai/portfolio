@@ -2,7 +2,7 @@
 import { Picture } from 'astro:assets';
 import { getLang } from '../i18n';
 import { ui } from '../i18n/ui';
-import { portrait } from '../data/portrait';
+import { portrait, presenting } from '../data/portrait';
 
 const t = ui[getLang(Astro.url)];
 ---
@@ -45,6 +45,19 @@ const t = ui[getLang(Astro.url)];
       <p class="eyebrow">{t.about.eyebrow}</p>
       <h2 id="about-title">{t.about.title}</h2>
       <p class="text">{t.about.text}</p>
+      {
+        presenting && (
+          <Picture
+            src={presenting}
+            alt={t.about.presentingAlt}
+            formats={['avif', 'webp']}
+            quality={78}
+            widths={[480, 720, 980]}
+            sizes="(min-width: 64rem) 40vw, 90vw"
+            class="presenting"
+          />
+        )
+      }
       <ul class="reasons">
         {
           t.about.reasons.map((r) => (
@@ -99,11 +112,15 @@ const t = ui[getLang(Astro.url)];
     overflow: hidden;
     background: var(--night);
   }
+  .photo :global(picture),
   .photo :global(img) {
+    display: block;
     width: 100%;
     height: 100%;
+  }
+  .photo :global(img) {
     object-fit: cover;
-    object-position: 50% 22%;
+    object-position: 50% 15%;
   }
   .photo::after {
     content: '';
@@ -161,6 +178,16 @@ const t = ui[getLang(Astro.url)];
     max-width: 34rem;
     color: #cfcbc2;
     font-size: var(--text-lg);
+  }
+  .about-copy :global(.presenting) {
+    width: 100%;
+    max-width: 38rem;
+    aspect-ratio: 16 / 9;
+    margin-top: var(--space-l);
+    object-fit: cover;
+    object-position: 50% 30%;
+    border-radius: var(--radius-l);
+    border: 1px solid rgb(239 235 226 / 0.1);
   }
   .reasons {
     display: grid;

@@ -6,6 +6,8 @@ import { getProjects } from '../data/projects';
 import Icon from './Icon.astro';
 import BrowserFrame from './BrowserFrame.astro';
 import PhoneFrame from './PhoneFrame.astro';
+import { Image } from 'astro:assets';
+import { face } from '../data/portrait';
 
 const lang = getLang(Astro.url);
 const t = ui[lang];
@@ -15,7 +17,19 @@ const [morzsa, north, ledger] = getProjects(lang);
 <section class="hero" aria-labelledby="hero-title" data-hero>
   <div class="container hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow">{t.hero.eyebrow}</p>
+      {
+        face ? (
+          <p class="who">
+            <Image src={face} alt="" width={112} height={112} quality={82} class="who-img" loading="eager" />
+            <span>
+              <strong>Mojtaba (Moji) Maleki</strong>
+              <span>{t.hero.eyebrow}</span>
+            </span>
+          </p>
+        ) : (
+          <p class="eyebrow">{t.hero.eyebrow}</p>
+        )
+      }
       <h1 id="hero-title">{t.hero.title} <em>{t.hero.titleEm}</em></h1>
       <p class="lede">{t.hero.lede}</p>
       <div class="actions">
@@ -89,6 +103,35 @@ const [morzsa, north, ledger] = getProjects(lang);
       grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
       gap: clamp(2.5rem, 4vw, 4.5rem);
     }
+  }
+  .who {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.35rem 1.1rem 0.35rem 0.35rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    line-height: 1.25;
+  }
+  .who :global(.who-img) {
+    flex: none;
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .who > span {
+    display: grid;
+  }
+  .who strong {
+    color: var(--ink);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+  .who > span > span {
+    color: var(--muted);
+    font-size: var(--text-xs);
   }
   .hero h1 {
     margin-top: var(--space-m);

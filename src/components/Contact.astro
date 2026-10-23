@@ -4,7 +4,7 @@ import { getLang } from '../i18n';
 import { ui } from '../i18n/ui';
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
-import { portrait } from '../data/portrait';
+import { face } from '../data/portrait';
 
 const t = ui[getLang(Astro.url)].contact;
 const newTab = ui[getLang(Astro.url)].newTab;
@@ -18,7 +18,7 @@ const defaultMessage = `${t.greeting} ${t.defaultNeed} ${t.closing}`;
       <h2 id="contact-title">{t.title} <em>{t.titleEm}</em></h2>
       <p class="intro">{t.lede}</p>
       <p class="personal">
-        {portrait && <Image src={portrait} alt="" width={96} height={96} quality={80} class="avatar" />}
+        {face && <Image src={face} alt="" width={96} height={96} quality={82} class="avatar" />}
         <span>{t.personal}</span>
       </p>
       <div class="direct">
@@ -215,7 +215,6 @@ const defaultMessage = `${t.greeting} ${t.defaultNeed} ${t.closing}`;
     border: 2px solid rgb(255 255 255 / 0.7);
     border-radius: 50%;
     object-fit: cover;
-    object-position: 50% 22%;
   }
   .direct {
     display: flex;
