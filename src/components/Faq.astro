@@ -1,0 +1,130 @@
+---
+import { getLang } from '../i18n';
+import { ui } from '../i18n/ui';
+
+const t = ui[getLang(Astro.url)];
+---
+
+<section id="faq" class="section faq" aria-labelledby="faq-title">
+  <div class="container faq-grid">
+    <div class="faq-head" data-reveal>
+      <p class="eyebrow">{t.faq.eyebrow}</p>
+      <h2 id="faq-title">{t.faq.title}</h2>
+      <p>{t.faq.more} <a class="link" href="#contact">{t.faq.ask}</a></p>
+    </div>
+    <div class="faq-list" data-reveal style="--reveal-delay: 1">
+      {
+        t.faq.items.map(({ q, a }, i) => (
+          <details name="faq" open={i === 0}>
+            <summary>
+              <span>{q}</span>
+              <span class="plus" aria-hidden="true" />
+            </summary>
+            <div class="answer">
+              <p>{a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  @media (min-width: 64rem) {
+    .faq-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+    .faq-head {
+      position: sticky;
+      top: calc(var(--header-h) + 3rem);
+      align-self: start;
+    }
+  }
+  .faq-head h2 {
+    margin-block: var(--space-m);
+    font-size: var(--text-3xl);
+  }
+  .faq-list {
+    border-top: 1px solid var(--ink);
+  }
+  details {
+    border-bottom: 1px solid var(--line-strong);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: var(--space-m);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    list-style: none;
+    transition: color var(--dur-fast) ease;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover {
+    color: var(--accent);
+  }
+  summary:focus-visible {
+    outline-offset: 4px;
+  }
+  .plus {
+    position: relative;
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+  }
+  .plus::before,
+  .plus::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 1.5px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+  .plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  details[open] .plus {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  details[open] .plus::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  .answer {
+    padding: 0 3rem var(--space-m) 0;
+    color: var(--ink-2);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    details[open] .answer {
+      animation: reveal var(--dur) var(--ease-out);
+    }
+  }
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+</style>

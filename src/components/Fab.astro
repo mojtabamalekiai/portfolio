@@ -1,0 +1,85 @@
+---
+import { site, external } from '../data/site';
+import { getLang } from '../i18n';
+import { ui } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+const t = ui[getLang(Astro.url)];
+---
+
+<a href={site.facebook} class="fab" data-fab {...external}>
+  <Icon name="messenger" />
+  <span>{t.fab}</span>
+  <span class="visually-hidden">{t.newTab}</span>
+</a>
+
+<script>
+  // Show the quick-message button once the hero is out of view; hide it while the contact section is on screen.
+  const fab = document.querySelector<HTMLElement>('[data-fab]');
+  const hero = document.querySelector('[data-hero]');
+  const contact = document.getElementById('contact');
+  if (fab && hero && contact && 'IntersectionObserver' in window) {
+    let pastHero = false;
+    let atContact = false;
+    const render = () => fab.classList.toggle('is-on', pastHero && !atContact);
+    new IntersectionObserver(([e]) => {
+      pastHero = !e.isIntersecting && e.boundingClientRect.top < 0;
+      render();
+    }).observe(hero);
+    new IntersectionObserver(([e]) => {
+      atContact = e.isIntersecting;
+      render();
+    }, { rootMargin: '0px 0px -20% 0px' }).observe(contact);
+  }
+</script>
+
+<style>
+  .fab {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: none;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.25rem 0.75rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: #fff;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 16px 36px -14px rgb(36 67 219 / 0.85), 0 2px 6px rgb(21 22 26 / 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.96);
+    transition:
+      opacity var(--dur) ease,
+      transform var(--dur) var(--ease-out),
+      background-color var(--dur-fast) ease;
+  }
+  :global(.js) .fab {
+    display: inline-flex;
+  }
+  .fab.is-on {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+  .fab:hover {
+    background: var(--accent-ink);
+  }
+  .fab :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+  .fab:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  :global(html.menu-open) .fab {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>

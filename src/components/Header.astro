@@ -1,0 +1,343 @@
+---
+import { site, external } from '../data/site';
+import { getLang, localePath } from '../i18n';
+import { ui } from '../i18n/ui';
+import Icon from './Icon.astro';
+import LangSwitch from './LangSwitch.astro';
+
+const lang = getLang(Astro.url);
+const t = ui[lang];
+const home = localePath(lang, '/');
+---
+
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a href={home} class="wordmark" aria-label={`${site.name}, ${t.nav.home}`}>
+      Mojtaba Maleki<span class="dot" aria-hidden="true"></span>
+    </a>
+
+    <div class="header-tools">
+      <LangSwitch class="lang-mobile" />
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
+        <span class="menu-label" data-open-label={t.nav.close} data-closed-label={t.nav.menu}>{t.nav.menu}</span>
+        <Icon name="menu" class="i-open" />
+        <Icon name="close" class="i-close" />
+      </button>
+    </div>
+
+    <div class="menu" id="site-menu" data-menu>
+      <nav aria-label={t.nav.main}>
+        <ul class="nav-list">
+          {
+            t.nav.items.map((item) => (
+              <li>
+                <a href={localePath(lang, `/#${item.id}`)} data-spy={item.id}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <LangSwitch class="lang-desktop" />
+      <a href={localePath(lang, '/#contact')} class="btn btn--primary header-cta">{t.nav.cta}</a>
+      <div class="menu-contact">
+        <p>{t.nav.menuNote}</p>
+        <a href={site.facebook} class="btn btn--primary" {...external}>
+          <Icon name="messenger" />
+          {t.messenger}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (header && toggle && menu) {
+    const label = toggle.querySelector<HTMLElement>('.menu-label')!;
+    const setOpen = (open: boolean) => {
+      header.toggleAttribute('data-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      label.textContent = (open ? label.dataset.openLabel : label.dataset.closedLabel) ?? '';
+      document.documentElement.classList.toggle('menu-open', open);
+    };
+
+    toggle.addEventListener('click', () => setOpen(!header.hasAttribute('data-open')));
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.hasAttribute('data-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 60rem)').addEventListener('change', () => setOpen(false));
+
+    const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // Highlight the section currently in view.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.spy!))
+    .filter((s): s is HTMLElement => Boolean(s));
+  if (sections.length && 'IntersectionObserver' in window) {
+    const visible = new Map<string, boolean>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => visible.set(e.target.id, e.isIntersecting));
+        const current = sections.find((s) => visible.get(s.id))?.id;
+        links.forEach((a) => {
+          if (a.dataset.spy === current) a.setAttribute('aria-current', 'location');
+          else a.removeAttribute('aria-current');
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) ease;
+  }
+  .site-header[data-scrolled] {
+    border-bottom-color: var(--line);
+  }
+  .header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    min-height: var(--header-h);
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15rem;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .header-tools {
+    display: none;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .nav-list {
+    display: flex;
+    gap: var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+  .nav-list a {
+    position: relative;
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--dur-fast) ease;
+  }
+  .nav-list a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.3rem;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .nav-list a:hover,
+  .nav-list a:focus-visible,
+  .nav-list a[aria-current] {
+    color: var(--ink);
+  }
+  .nav-list a:hover::after,
+  .nav-list a:focus-visible::after,
+  .nav-list a[aria-current]::after {
+    transform: scaleX(1);
+  }
+  .nav-list a[aria-current]::after {
+    background: var(--accent);
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.6rem;
+    padding: 0.4rem 0.8rem 0.4rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--ink);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+  .menu-toggle .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .menu-toggle :global(.i-close),
+  [data-open] .menu-toggle :global(.i-open) {
+    display: none;
+  }
+  [data-open] .menu-toggle :global(.i-close) {
+    display: block;
+  }
+  .menu-contact {
+    display: none;
+  }
+
+  /* Desktop */
+  @media (min-width: 60rem) {
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: var(--space-l);
+    }
+    .nav-list {
+      margin-right: var(--space-xs);
+    }
+    .header-cta {
+      min-height: 2.75rem;
+      padding-block: 0.6rem;
+    }
+  }
+
+  @media (max-width: 59.99rem) {
+    :global(.lang-desktop),
+    .header-cta {
+      display: none !important;
+    }
+    /* Without JavaScript: links stay visible as a simple row */
+    .menu {
+      width: 100%;
+      padding-bottom: var(--space-s);
+    }
+    .nav-list {
+      flex-wrap: wrap;
+      gap: var(--space-2xs) var(--space-m);
+    }
+
+    /* With JavaScript: a proper menu panel */
+    :global(.js) .header-tools {
+      display: inline-flex;
+    }
+    :global(.js) .menu {
+      display: none;
+    }
+    :global(.js) .site-header[data-open] {
+      height: 100svh;
+    }
+    :global(.js) [data-open] .menu {
+      display: grid;
+      gap: var(--space-l);
+      max-height: calc(100svh - var(--header-h));
+      overflow-y: auto;
+      padding: var(--space-s) 0 var(--space-xl);
+      animation: menu-in var(--dur) var(--ease-out);
+    }
+    :global(.js) [data-open] .nav-list {
+      display: grid;
+      gap: 0;
+    }
+    :global(.js) [data-open] .nav-list a {
+      display: block;
+      padding-block: 0.8rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    :global(.js) [data-open] .nav-list a::after {
+      display: none;
+    }
+    :global(.js) [data-open] .menu-contact {
+      display: grid;
+      justify-items: start;
+      gap: var(--space-xs);
+      color: var(--muted);
+      font-size: var(--text-sm);
+    }
+  }
+  /* No JavaScript on small screens: the switch sits with the links */
+  @media (max-width: 59.99rem) {
+    :global(html:not(.js)) :global(.lang-desktop) {
+      display: inline-flex !important;
+      margin-top: var(--space-xs);
+    }
+  }
+  /* Small phones: icon-only menu button (its label stays available to screen readers) */
+  @media (max-width: 28rem) {
+    .menu-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .menu-toggle {
+      justify-content: center;
+      width: 2.75rem;
+      min-height: 2.75rem;
+      padding: 0;
+    }
+    .menu-toggle .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    .wordmark {
+      font-size: 1.2rem;
+    }
+  }
+  @media (max-width: 22rem) {
+    .header-inner {
+      gap: var(--space-2xs);
+    }
+    .wordmark {
+      font-size: 1.08rem;
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  :global(html.menu-open) {
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,741 @@
+---
+import '@fontsource-variable/big-shoulders-display';
+import '@fontsource-variable/inter-tight/wght.css';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import { getLang, localePath } from '../i18n';
+import chair from '../assets/photos/north-chair.jpg';
+import cut from '../assets/photos/north-cut.jpg';
+
+const lang = getLang(Astro.url);
+
+const copy = {
+  en: {
+    title: 'North & Fade Barbers (design concept by Mojtaba Maleki)',
+    description: 'A design concept for a fictional modern barbershop, designed and built by Mojtaba Maleki.',
+    nav: ['Prices', 'Barbers', 'Visit'],
+    book: 'Book a chair',
+    tag: 'Barbers · By the old harbour',
+    h1: ['Sharp cuts.', 'Zero fuss.'],
+    lede: 'Classic and modern men’s cuts, skin fades and hot-towel shaves. Walk in, or book your chair in under a minute.',
+    seePrices: 'See prices',
+    heroAlt: 'A leather barber chair in front of an exposed brick wall',
+    facts: [['Tue – Sat', '9:00 – 19:00'], ['Walk-ins', 'welcome before noon'], ['3 chairs', 'rarely a long wait']],
+    factsLabel: 'Quick facts',
+    servicesTitle: ['Services', '&', 'prices'],
+    servicesNote: 'No hidden extras. Every service includes a hot towel and styling.',
+    min: 'min',
+    services: [
+      ['Haircut', 'Scissor or clipper, wash and style.', 45, '6 500 Ft'],
+      ['Skin fade', 'Tight fade, any length on top.', 45, '7 500 Ft'],
+      ['Beard trim & shape', 'Line-up, trim, hot towel finish.', 30, '4 500 Ft'],
+      ['Cut + beard', 'The full reset. Our most booked.', 75, '10 500 Ft'],
+      ['Hot towel shave', 'Straight razor, two towels, no rush.', 40, '6 000 Ft'],
+      ['Kids’ cut', 'Under 12s. Patience included.', 30, '4 500 Ft'],
+    ],
+    barbersTitle: 'The barbers',
+    barbersIntro: 'Three chairs, three barbers, one standard. Ask for someone by name, or take the first free chair.',
+    cutAlt: "A barber with a tattooed forearm trimming a client's hair with clippers",
+    barbers: [['ÁK', 'Ádám', 'Owner · fades & textured crops'], ['MR', 'Marco', 'Classic scissor work'], ['LB', 'Levi', 'Beards & hot towel shaves']],
+    bookTitle: 'Book your chair',
+    bookIntro: 'Pick a service and a time. You’ll get a reminder the day before.',
+    demoNote: ['Preview only.', 'This booking flow is part of a design concept. No real appointment is made.'],
+    legendService: '1. Service',
+    legendTime: '2. Time today',
+    preview: 'Preview booking',
+    result: 'Preview: {service} at {time}. A real site would confirm your booking here. This concept doesn’t book anything.',
+    visitTitle: 'Visit',
+    address: ['Harbour Street 18', 'Next to the ferry steps'],
+    hours: [['Monday', 'Closed'], ['Tue – Fri', '9:00 – 19:00'], ['Saturday', '9:00 – 16:00'], ['Sunday', 'Closed']],
+    footer: ['North & Fade is a fictional business. This website is a design concept by', 'Photography via Unsplash.'],
+  },
+  hu: {
+    title: 'North & Fade borbélyüzlet (Mojtaba Maleki koncepciója)',
+    description: 'Egy kitalált modern borbélyüzlet weboldal-koncepciója. Tervezte és készítette: Mojtaba Maleki.',
+    nav: ['Árak', 'Borbélyok', 'Hol vagyunk?'],
+    book: 'Foglalás',
+    tag: 'Borbélyüzlet · A régi kikötőnél',
+    h1: ['Éles vágás.', 'Semmi felhajtás.'],
+    lede: 'Klasszikus és modern férfi hajvágás, skin fade és borotválás forró törölközővel. Gyere be, vagy foglalj egy perc alatt.',
+    seePrices: 'Árak',
+    heroAlt: 'Bőr borbélyszék egy csupasz téglafal előtt',
+    facts: [['Kedd – szombat', '9:00 – 19:00'], ['Bejelentkezés nélkül', 'délig is jöhetsz'], ['3 szék', 'ritkán kell várni']],
+    factsLabel: 'Röviden',
+    servicesTitle: ['Szolgáltatások', 'és', 'árak'],
+    servicesNote: 'Nincsenek rejtett költségek. Minden szolgáltatásban benne a forró törölköző és a styling.',
+    min: 'perc',
+    services: [
+      ['Hajvágás', 'Ollóval vagy géppel, mosással, formázással.', 45, '6 500 Ft'],
+      ['Skin fade', 'Szoros átmenet, felül bármilyen hossz.', 45, '7 500 Ft'],
+      ['Szakáll igazítás', 'Kontúr, vágás, forró törölköző.', 30, '4 500 Ft'],
+      ['Haj + szakáll', 'A teljes megújulás. A legnépszerűbb.', 75, '10 500 Ft'],
+      ['Borotválás', 'Borotvakés, két törölköző, kapkodás nélkül.', 40, '6 000 Ft'],
+      ['Gyerek hajvágás', '12 év alatt. Türelemmel.', 30, '4 500 Ft'],
+    ],
+    barbersTitle: 'A borbélyok',
+    barbersIntro: 'Három szék, három borbély, egy mérce. Kérj valakit név szerint, vagy ülj az első szabad székbe.',
+    cutAlt: 'Tetovált alkarú borbély géppel igazítja egy vendég haját',
+    barbers: [['ÁK', 'Ádám', 'Tulajdonos · fade és texturált frizurák'], ['MR', 'Marco', 'Klasszikus ollós vágás'], ['LB', 'Levi', 'Szakáll és borotválás']],
+    bookTitle: 'Foglalj időpontot',
+    bookIntro: 'Válassz szolgáltatást és időpontot. Előtte nap emlékeztetőt küldünk.',
+    demoNote: ['Csak előnézet.', 'Ez a foglalási folyamat egy koncepció része, valódi időpont nem jön létre.'],
+    legendService: '1. Szolgáltatás',
+    legendTime: '2. Időpont ma',
+    preview: 'Foglalás előnézete',
+    result: 'Előnézet: {service}, {time}. Egy valódi oldalon itt erősítenénk meg a foglalást. Ez a koncepció semmit nem foglal le.',
+    visitTitle: 'Itt vagyunk',
+    address: ['Kikötő utca 18.', 'A kompkikötő lépcsőjénél'],
+    hours: [['Hétfő', 'Zárva'], ['Kedd – péntek', '9:00 – 19:00'], ['Szombat', '9:00 – 16:00'], ['Vasárnap', 'Zárva']],
+    footer: ['A North & Fade kitalált vállalkozás. Ez a weboldal egy koncepció, készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+
+const services = copy.services as [string, string, number, string][];
+const slots = ['10:00', '10:45', '11:30', '13:15', '14:00', '15:30', '16:15', '17:45'];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#111110">
+  <ConceptBar business="North & Fade" />
+
+  <div class="nf">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="North & Fade">North <span>&amp;</span> Fade</a>
+        <nav aria-label="North & Fade">
+          <ul>
+            <li><a href="#services">{copy.nav[0]}</a></li>
+            <li><a href="#barbers">{copy.nav[1]}</a></li>
+            <li><a href="#visit">{copy.nav[2]}</a></li>
+          </ul>
+        </nav>
+        <a href="#book" class="btn btn-small">{copy.book}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <Picture
+          src={chair}
+          formats={['avif', 'webp']}
+          quality={58}
+          widths={[640, 960, 1400, 1920]}
+          sizes="100vw"
+          alt={copy.heroAlt}
+          loading="eager"
+          fetchpriority="high"
+          class="hero-img"
+        />
+        <div class="wrap hero-inner">
+          <p class="tag">{copy.tag}</p>
+          <h1>{copy.h1[0]}<br /><span>{copy.h1[1]}</span></h1>
+          <p class="lede">{copy.lede}</p>
+          <div class="hero-actions">
+            <a href="#book" class="btn">{copy.book}</a>
+            <a href="#services" class="btn btn-ghost">{copy.seePrices}</a>
+          </div>
+        </div>
+      </section>
+
+      <ul class="facts wrap" aria-label={copy.factsLabel}>
+        {copy.facts.map(([a, b]) => <li><strong>{a}</strong> {b}</li>)}
+      </ul>
+
+      <section id="services" class="services wrap" aria-labelledby="services-title">
+        <div class="section-head">
+          <h2 id="services-title">{copy.servicesTitle[0]} <span>{copy.servicesTitle[1]}</span> {copy.servicesTitle[2]}</h2>
+          <p>{copy.servicesNote}</p>
+        </div>
+        <ul class="price-list">
+          {
+            services.map(([name, detail, time, price]) => (
+              <li>
+                <div>
+                  <h3>{name}</h3>
+                  <p>{detail}</p>
+                </div>
+                <span class="time">{time} {copy.min}</span>
+                <span class="price">{price}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section id="barbers" class="barbers">
+        <div class="wrap barbers-inner">
+          <div class="barbers-media">
+            <Picture src={cut} formats={['avif', 'webp']} quality={70} widths={[480, 720, 960]} sizes="(min-width: 60rem) 40vw, 92vw" alt={copy.cutAlt} />
+          </div>
+          <div>
+            <h2>{copy.barbersTitle}</h2>
+            <p class="barbers-intro">{copy.barbersIntro}</p>
+            <ul class="barber-list">
+              {
+                copy.barbers.map(([initials, name, role]) => (
+                  <li>
+                    <span class="avatar" aria-hidden="true">{initials}</span>
+                    <div>
+                      <h3>{name}</h3>
+                      <p>{role}</p>
+                    </div>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="book" class="book wrap" aria-labelledby="book-title">
+        <div class="book-intro">
+          <h2 id="book-title">{copy.bookTitle}</h2>
+          <p>{copy.bookIntro}</p>
+          <p class="demo-note"><strong>{copy.demoNote[0]}</strong> {copy.demoNote[1]}</p>
+        </div>
+        <form class="book-form" data-booking data-result={copy.result}>
+          <fieldset>
+            <legend>{copy.legendService}</legend>
+            <div class="chips">
+              {
+                services.slice(0, 4).map(([name], i) => (
+                  <label class="chip">
+                    <input type="radio" name="service" value={name} checked={i === 0} />
+                    <span>{name}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>{copy.legendTime}</legend>
+            <div class="chips chips-time">
+              {
+                slots.map((t, i) => (
+                  <label class="chip">
+                    <input type="radio" name="time" value={t} checked={i === 2} />
+                    <span>{t}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <button type="submit" class="btn">{copy.preview}</button>
+          <p class="book-result" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="visit" class="visit">
+        <div class="wrap visit-inner">
+          <div>
+            <h2>{copy.visitTitle}</h2>
+            <address>{copy.address[0]}<br />{copy.address[1]}</address>
+          </div>
+          <dl class="hours">
+            {copy.hours.map(([d, h]) => <div><dt>{d}</dt><dd>{h}</dd></div>)}
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo">North <span>&amp;</span> Fade</p>
+      <p>
+        {copy.footer[0]}{' '}
+        <a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}
+      </p>
+    </footer>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-booking]');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const result = form.querySelector('.book-result');
+    if (result)
+      result.textContent = (form.dataset.result ?? '')
+        .replace('{service}', String(data.get('service')))
+        .replace('{time}', String(data.get('time')));
+  });
+</script>
+
+<style>
+  .nf {
+    --coal: #111110;
+    --coal-2: #1b1a18;
+    --coal-3: #262421;
+    --bone: #ece5d8;
+    --ash: #a8a092;
+    --brass: #cfa75e;
+    --brass-2: #e0bd7a;
+    --rule: rgb(236 229 216 / 0.14);
+    background: var(--coal);
+    color: var(--ash);
+    font-family: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+  }
+  .wrap {
+    width: min(100% - clamp(2.5rem, 6vw, 5rem), 76rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .logo {
+    font-family: 'Big Shoulders Display Variable', Impact, sans-serif;
+    color: var(--bone);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+  }
+  h2 span,
+  .logo span {
+    color: var(--brass);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.1rem;
+    padding: 0.8rem 1.5rem;
+    border: 0;
+    border-radius: 2px;
+    background: var(--brass);
+    color: var(--coal);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .btn:hover {
+    background: var(--brass-2);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--bone);
+    box-shadow: inset 0 0 0 1.5px rgb(236 229 216 / 0.55);
+  }
+  .btn-ghost:hover {
+    background: var(--bone);
+    color: var(--coal);
+  }
+  .btn-small {
+    min-height: 2.6rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+  }
+  .nf :focus-visible {
+    outline-color: var(--brass);
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(17 17 16 / 0.92);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+  }
+  .logo {
+    font-size: 1.75rem;
+    text-decoration: none;
+  }
+  .top ul {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: 0;
+    list-style: none;
+  }
+  .top nav a {
+    color: var(--bone);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .top nav a:hover {
+    color: var(--brass);
+  }
+  @media (max-width: 40rem) {
+    .top nav {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    display: grid;
+    min-height: min(88vh, 54rem);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 35%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, rgb(17 17 16 / 0.92) 0%, rgb(17 17 16 / 0.7) 45%, rgb(17 17 16 / 0.2) 100%),
+      linear-gradient(0deg, rgb(17 17 16 / 1) 0%, rgb(17 17 16 / 0) 35%);
+  }
+  .hero-inner {
+    align-self: end;
+    padding-block: 6rem clamp(3rem, 7vw, 5.5rem);
+  }
+  .tag {
+    color: var(--brass);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    margin-top: 1rem;
+    font-size: clamp(4rem, 2rem + 9vw, 9.5rem);
+  }
+  .hero h1 span {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--bone);
+  }
+  .lede {
+    max-width: 30rem;
+    margin-top: 1.5rem;
+    color: #d6cfc2;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  /* Facts */
+  .facts {
+    display: grid;
+    gap: 1px;
+    padding: 0;
+    list-style: none;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  @media (min-width: 46rem) {
+    .facts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .facts li {
+    padding: 1.25rem 1.5rem;
+    background: var(--coal);
+  }
+  .facts strong {
+    display: block;
+    color: var(--bone);
+    font-family: 'Big Shoulders Display Variable', sans-serif;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+  }
+
+  /* Services */
+  .services {
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+  .section-head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 50rem) {
+    .section-head {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+  .section-head h2,
+  .barbers h2,
+  .book h2,
+  .visit h2 {
+    font-size: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .price-list {
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+  .price-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1.5rem;
+    align-items: baseline;
+    padding-block: 1.35rem;
+    border-bottom: 1px solid var(--rule);
+    transition: background-color 0.2s ease;
+  }
+  @media (min-width: 46rem) {
+    .price-list li {
+      grid-template-columns: 1fr 7rem 8rem;
+      padding-inline: 0.75rem;
+    }
+    .price-list li:hover {
+      background: var(--coal-2);
+    }
+  }
+  .price-list h3 {
+    font-size: 1.9rem;
+  }
+  .price-list p {
+    margin-top: 0.25rem;
+  }
+  .time {
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .price {
+    color: var(--brass);
+    font-weight: 700;
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  @media (max-width: 45.99rem) {
+    .time {
+      grid-row: 2;
+      grid-column: 2;
+      text-align: right;
+    }
+    .price {
+      grid-row: 1;
+      grid-column: 2;
+    }
+  }
+
+  /* Barbers */
+  .barbers {
+    background: var(--coal-2);
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+  .barbers-inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .barbers-inner {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+  .barbers-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    filter: grayscale(0.35) contrast(1.05);
+  }
+  .barbers-intro {
+    max-width: 30rem;
+    margin-top: 1.25rem;
+    font-size: 1.15rem;
+  }
+  .barber-list {
+    display: grid;
+    gap: 1px;
+    margin-top: 2.25rem;
+    padding: 0;
+    list-style: none;
+    border-block: 1px solid var(--rule);
+    background: var(--rule);
+  }
+  .barber-list li {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.1rem 0;
+    background: var(--coal-2);
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1.5px solid var(--brass);
+    border-radius: 50%;
+    color: var(--brass);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .barber-list h3 {
+    font-size: 1.8rem;
+  }
+
+  /* Booking */
+  .book {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+  @media (min-width: 60rem) {
+    .book {
+      grid-template-columns: 1fr 1.3fr;
+    }
+  }
+  .book-intro p {
+    max-width: 28rem;
+    margin-top: 1.25rem;
+    font-size: 1.1rem;
+  }
+  .demo-note {
+    padding: 1rem 1.2rem;
+    border-left: 3px solid var(--brass);
+    background: var(--coal-2);
+    font-size: 0.95rem !important;
+  }
+  .demo-note strong {
+    color: var(--bone);
+  }
+  .book-form {
+    display: grid;
+    gap: 2rem;
+    align-content: start;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--coal-2);
+    border: 1px solid var(--rule);
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  legend {
+    margin-bottom: 0.9rem;
+    color: var(--bone);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chip {
+    position: relative;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgb(236 229 216 / 0.25);
+    color: var(--bone);
+    font-weight: 550;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+  .chips-time .chip span {
+    font-variant-numeric: tabular-nums;
+  }
+  .chip input:hover + span {
+    border-color: var(--brass);
+  }
+  .chip input:checked + span {
+    border-color: var(--brass);
+    background: var(--brass);
+    color: var(--coal);
+  }
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--brass);
+    outline-offset: 2px;
+  }
+  .book-form .btn {
+    justify-self: start;
+  }
+  .book-result:empty {
+    display: none;
+  }
+  .book-result {
+    padding: 1rem 1.2rem;
+    border: 1px dashed var(--brass);
+    color: var(--bone);
+  }
+
+  /* Visit */
+  .visit {
+    background: var(--brass);
+    color: var(--coal);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .visit h2 {
+    color: var(--coal);
+  }
+  .visit-inner {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 50rem) {
+    .visit-inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+  address {
+    margin-top: 1rem;
+    font-style: normal;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .hours > div {
+    display: flex;
+    justify-content: space-between;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid rgb(17 17 16 / 0.25);
+    font-weight: 600;
+  }
+  .hours dd {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Footer */
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 2.5rem 3rem;
+    font-size: 0.9rem;
+  }
+  .foot a {
+    color: var(--bone);
+  }
+</style>

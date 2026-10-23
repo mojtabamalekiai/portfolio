@@ -1,0 +1,189 @@
+---
+import { Picture } from 'astro:assets';
+import { getLang } from '../i18n';
+import { ui } from '../i18n/ui';
+import { portrait } from '../data/portrait';
+
+const t = ui[getLang(Astro.url)];
+---
+
+<section id="about" class="section about" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <aside class="card" data-reveal aria-label={t.about.factsLabel}>
+      {
+        portrait ? (
+          <div class="photo">
+            <Picture
+              src={portrait}
+              alt={t.about.photoAlt}
+              formats={['avif', 'webp']}
+              quality={78}
+              widths={[320, 480, 720, 960]}
+              sizes="(min-width: 64rem) 26rem, 90vw"
+            />
+          </div>
+        ) : (
+          <div class="monogram" aria-hidden="true">
+            <span>M</span>
+            <i />
+          </div>
+        )
+      }
+      <dl>
+        {
+          t.about.facts.map(([k, v]) => (
+            <div>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </aside>
+
+    <div class="about-copy" data-reveal style="--reveal-delay: 1">
+      <p class="eyebrow">{t.about.eyebrow}</p>
+      <h2 id="about-title">{t.about.title}</h2>
+      <p class="text">{t.about.text}</p>
+      <ul class="reasons">
+        {
+          t.about.reasons.map((r) => (
+            <li>
+              <strong>{r.title}</strong>
+              <span>{r.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--night);
+    color: var(--on-night-muted);
+  }
+  .about :global(:focus-visible) {
+    outline-color: var(--accent-on-night);
+  }
+  .about-grid {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .about-grid {
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: clamp(3rem, 7vw, 7rem);
+    }
+  }
+  .card {
+    width: 100%;
+    max-width: 26rem;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    border: 1px solid rgb(239 235 226 / 0.1);
+    background: var(--night-2);
+  }
+  .monogram {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    background: radial-gradient(circle at 70% 30%, rgb(143 162 255 / 0.25), transparent 60%);
+  }
+  .photo {
+    position: relative;
+    aspect-ratio: 4 / 4.6;
+    overflow: hidden;
+    background: var(--night);
+  }
+  .photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 22%;
+  }
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 30%;
+    background: linear-gradient(transparent, var(--night-2));
+    pointer-events: none;
+  }
+  .monogram span {
+    color: var(--on-night);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 5rem + 8vw, 11rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  .monogram i {
+    position: absolute;
+    right: 28%;
+    bottom: 22%;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  dl {
+    padding: var(--space-2xs) var(--space-l) var(--space-m);
+  }
+  dl div {
+    display: grid;
+    gap: 0.1rem;
+    padding-block: var(--space-xs);
+    border-top: 1px solid rgb(239 235 226 / 0.1);
+  }
+  dt {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  dd {
+    color: var(--on-night);
+  }
+  .about .eyebrow {
+    color: var(--on-night-muted);
+  }
+  .about-copy h2 {
+    margin-block: var(--space-m) var(--space-m);
+    color: var(--on-night);
+    font-size: var(--text-3xl);
+  }
+  .text {
+    max-width: 34rem;
+    color: #cfcbc2;
+    font-size: var(--text-lg);
+  }
+  .reasons {
+    display: grid;
+    gap: var(--space-s);
+    margin-top: var(--space-xl);
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) {
+    .reasons {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .reasons li {
+    display: grid;
+    gap: 0.25rem;
+    padding-top: var(--space-s);
+    border-top: 2px solid var(--accent-on-night);
+  }
+  .reasons strong {
+    color: var(--on-night);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 400;
+  }
+</style>

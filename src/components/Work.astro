@@ -1,0 +1,368 @@
+---
+import { Picture } from 'astro:assets';
+import { getLang } from '../i18n';
+import { ui } from '../i18n/ui';
+import { getProjects } from '../data/projects';
+import PhoneFrame from './PhoneFrame.astro';
+import Icon from './Icon.astro';
+
+const lang = getLang(Astro.url);
+const t = ui[lang];
+const projects = getProjects(lang);
+---
+
+<section id="work" class="section work" aria-labelledby="work-title">
+  <div class="container">
+    <div class="head" data-reveal>
+      <div>
+        <p class="eyebrow">{t.work.eyebrow}</p>
+        <h2 id="work-title">{t.work.title}</h2>
+      </div>
+      <div class="head-side">
+        <p class="lede">{t.work.lede}</p>
+        <p class="count">
+          <strong>{String(projects.length).padStart(2, '0')}</strong> {t.work.count}{' '}
+          <span class="hint">· {t.work.hoverHint}</span>
+        </p>
+      </div>
+    </div>
+
+    <ul class="cards" data-cards>
+      {
+        projects.map((p, i) => (
+          <li
+            class:list={['card', { 'card--dark': p.dark }]}
+            style={`--tone: ${p.tone}; --stage: ${p.stage}`}
+            data-reveal
+            data-card
+          >
+            <a href={p.href} class="card-link">
+              <div class="stage">
+                <div class="browser">
+                  <div class="bar" aria-hidden="true">
+                    <span class="dots">
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                    <span class="url">{p.name}</span>
+                  </div>
+                  <div class="screen">
+                    <Picture
+                      src={p.preview}
+                      alt={p.alt}
+                      formats={['avif', 'webp']}
+                      quality={70}
+                      widths={[560, 840, 1200]}
+                      sizes="(min-width: 64rem) 42vw, 80vw"
+                    />
+                  </div>
+                </div>
+                <PhoneFrame class="phone" src={p.mobile} alt="" sizes="(min-width: 64rem) 9rem, 24vw" />
+              </div>
+              <div class="info">
+                <div>
+                  <p class="meta">
+                    <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="tag">{t.work.concept}</span>
+                    <span>{p.kind}</span>
+                  </p>
+                  <h3>{p.name}</h3>
+                  <p class="summary">{p.summary}</p>
+                </div>
+                <span class="go" aria-hidden="true">
+                  <Icon name="arrow-ur" />
+                </span>
+                <span class="visually-hidden">{t.work.open}</span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="swipe" aria-hidden="true">{t.work.swipe} →</p>
+  </div>
+</section>
+
+<script>
+  // On touch screens there is no hover, so play the scroll preview for the card in view.
+  const touch = window.matchMedia('(hover: none)').matches;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (touch && !reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle('is-playing', e.intersectionRatio > 0.75)),
+      { threshold: [0, 0.75, 1] },
+    );
+    document.querySelectorAll('[data-card]').forEach((c) => io.observe(c));
+  }
+</script>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--space-m);
+    margin-bottom: var(--space-xl);
+  }
+  @media (min-width: 60rem) {
+    .head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      gap: var(--space-xl);
+    }
+  }
+  .head h2 {
+    margin-top: var(--space-m);
+    font-size: var(--text-3xl);
+    max-width: 14ch;
+  }
+  .lede {
+    max-width: 30rem;
+    color: var(--ink-2);
+    font-size: var(--text-lg);
+  }
+  .count {
+    margin-top: var(--space-s);
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .hint {
+    display: none;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .hint {
+      display: inline;
+    }
+  }
+  .count strong {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* Grid on desktop, swipeable row on smaller screens */
+  .cards {
+    display: grid;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 64rem) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .swipe {
+      display: none;
+    }
+  }
+  @media (max-width: 63.99rem) {
+    .cards {
+      grid-auto-flow: column;
+      grid-auto-columns: min(86%, 30rem);
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 0.5rem var(--gutter) 1.25rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .cards::-webkit-scrollbar {
+      display: none;
+    }
+    .card {
+      scroll-snap-align: start;
+    }
+  }
+  .swipe {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    text-align: right;
+  }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      transform var(--dur) var(--ease-out),
+      box-shadow var(--dur-slow) var(--ease-out);
+  }
+  .card-link:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-l);
+  }
+  .card-link:focus-visible {
+    outline-offset: 4px;
+    border-radius: var(--radius-l);
+  }
+
+  /* Stage: the project's own colour world */
+  .stage {
+    position: relative;
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem) 0;
+    background:
+      radial-gradient(120% 90% at 100% 100%, color-mix(in srgb, var(--tone) 35%, transparent), transparent 60%),
+      var(--stage);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .browser {
+    width: 88%;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #fbf9f4;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.08),
+      0 30px 60px -30px rgb(0 0 0 / 0.45);
+    transform: translateY(0);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    height: 1.9rem;
+    padding-inline: 0.75rem;
+    border-bottom: 1px solid rgb(0 0 0 / 0.07);
+    background: #f5f2ec;
+  }
+  .bar::after {
+    content: '';
+    width: 2rem;
+  }
+  .dots {
+    display: flex;
+    gap: 0.3rem;
+  }
+  .dots i {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #d9d3c7;
+  }
+  .url {
+    justify-self: center;
+    padding: 0.1rem 0.8rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.05);
+    color: #77746c;
+    font-size: 0.68rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .screen {
+    aspect-ratio: 16 / 10.5;
+    overflow: hidden;
+    background: #eee;
+  }
+  .screen :global(picture),
+  .screen :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .screen :global(img) {
+    object-fit: cover;
+    object-position: 50% 0%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .screen :global(img) {
+      transition: object-position 7s cubic-bezier(0.45, 0, 0.4, 1);
+    }
+    .card-link:hover .screen :global(img),
+    .card-link:focus-visible .screen :global(img),
+    .card.is-playing .screen :global(img) {
+      object-position: 50% 100%;
+    }
+    .card-link:hover .browser {
+      transform: translateY(-6px);
+    }
+  }
+  .stage :global(.phone) {
+    position: absolute;
+    right: clamp(0.9rem, 2.5vw, 2rem);
+    bottom: clamp(-3.5rem, -4vw, -2rem);
+    width: 22%;
+    box-shadow: 0 30px 50px -20px rgb(0 0 0 / 0.55);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .card-link:hover :global(.phone) {
+    transform: translateY(-14px) rotate(-2deg);
+  }
+
+  /* Info row */
+  .info {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding: var(--space-m) var(--space-m) var(--space-l);
+    border-top: 1px solid var(--line);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.7rem;
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .num {
+    color: var(--ink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .tag {
+    padding: 0.05rem 0.55rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+    color: var(--ink-2);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .info h3 {
+    margin-top: 0.5rem;
+    font-size: var(--text-2xl);
+  }
+  .summary {
+    margin-top: 0.3rem;
+    color: var(--ink-2);
+  }
+  .go {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--ink);
+    transition:
+      background-color var(--dur) ease,
+      color var(--dur) ease,
+      border-color var(--dur) ease,
+      transform var(--dur) var(--ease-out);
+  }
+  .go :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .card-link:hover .go,
+  .card-link:focus-visible .go {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: rotate(45deg);
+  }
+</style>

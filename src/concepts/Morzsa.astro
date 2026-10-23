@@ -1,0 +1,733 @@
+---
+import '@fontsource/young-serif/400.css';
+import '@fontsource-variable/figtree/wght.css';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import { getLang, localePath } from '../i18n';
+import croissants from '../assets/photos/morzsa-croissants.jpg';
+import coffeeLight from '../assets/photos/morzsa-coffee-light.jpg';
+import latte from '../assets/photos/morzsa-latte.jpg';
+import counter from '../assets/photos/morzsa-counter.jpg';
+
+const lang = getLang(Astro.url);
+
+const copy = {
+  en: {
+    title: 'Morzsa — Bakery & Coffee (design concept by Mojtaba Maleki)',
+    description: 'A design concept for a fictional neighbourhood bakery and coffee house, designed and built by Mojtaba Maleki.',
+    tagline: 'bakery & coffee',
+    nav: ['Today', 'Menu', 'Story'],
+    findUs: 'Find us',
+    kicker: 'Open from 7:00 · Tuesday to Sunday',
+    h1: 'Baked before the town wakes up.',
+    lede: 'Laminated pastries, slow-proved sourdough and properly made coffee. Baked in small batches every morning on Mill Lane.',
+    seeMenu: 'See the menu',
+    hoursBtn: 'Opening hours',
+    heroAlt: 'Rows of golden, freshly baked croissants on baking paper',
+    stamp: ['Fresh', 'every', 'morning'],
+    bakesTitle: 'Out of the oven today',
+    bakesNote: 'The menu changes with the seasons, but these three are always on the counter.',
+    bakes: [
+      { name: 'Butter croissant', note: 'Three days from dough to oven. Crisp outside, honeycomb inside.', price: '690 Ft' },
+      { name: 'Cardamom bun', note: 'Swedish-style, rolled in cardamom sugar. Usually gone by eleven.', price: '890 Ft' },
+      { name: 'Country sourdough', note: 'Slow-proved overnight, baked dark. Whole or half loaves.', price: '1 600 Ft' },
+    ],
+    menuTitle: 'The menu',
+    menuNote: 'Prices in Hungarian forints. Ask at the counter about allergens.',
+    counterAlt: 'Croissants lined up behind the glass of a bakery counter',
+    menu: [
+      ['Coffee', [['Espresso', '650'], ['Cortado', '850'], ['Flat white', '990'], ['Cappuccino', '950'], ['Batch filter', '890'], ['Oat or almond milk', '+150']]],
+      ['Bakery', [['Butter croissant', '690'], ['Pain au chocolat', '790'], ['Kakaós csiga (cocoa roll)', '750'], ['Cheese pogácsa (3 pcs)', '600'], ['Seasonal fruit danish', '950'], ['Sourdough loaf', '1 600']]],
+      ['Breakfast', [['Sourdough toast, butter & jam', '1 450'], ['Soft eggs, chives, toast', '2 300'], ['Yoghurt, granola & fruit', '1 900'], ['Ham & cheese croissant', '1 750']]],
+    ],
+    storyKicker: 'Our story',
+    storyTitle: 'A tiny bakery with a very large oven.',
+    story: [
+      'Morzsa means “crumb”. We started with one oven, a second-hand espresso machine and the idea that every neighbourhood deserves a croissant worth getting up for.',
+      'We still bake by hand, in small batches, and close when we sell out. Come early and stay as long as you like.',
+    ],
+    storyAlt: 'Morning sunlight across a wooden table with a coffee cup and espresso portafilter',
+    visitTitle: 'Come and visit',
+    findTitle: 'Find us',
+    address: ['Mill Lane 4', 'Ground floor, by the old bridge'],
+    amenities: 'Step-free entrance · Dogs welcome · Card & cash',
+    hoursTitle: 'Opening hours',
+    hours: [['Monday', 'Closed'], ['Tuesday – Friday', '7:00 – 17:00'], ['Saturday', '8:00 – 15:00'], ['Sunday', '8:00 – 13:00']],
+    ordersTitle: 'Cakes & large orders',
+    orders: 'Birthdays, office breakfasts or a whole tray of pogácsa. Ask at the counter two days ahead.',
+    latteAlt: "A barista's hand setting down a flat white with latte art on a dark counter",
+    footer: ['Morzsa is a fictional business. This website is a design concept by', 'Photography via Unsplash.'],
+  },
+  hu: {
+    title: 'Morzsa — Pékség és kávézó (Mojtaba Maleki koncepciója)',
+    description: 'Egy kitalált környékbeli pékség és kávézó weboldal-koncepciója. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'pékség & kávézó',
+    nav: ['Ma', 'Étlap', 'Történet'],
+    findUs: 'Hol vagyunk?',
+    kicker: 'Nyitva 7:00-tól · keddtől vasárnapig',
+    h1: 'Sütünk, mielőtt a város felébred.',
+    lede: 'Leveles tészták, lassan kelt kovászos kenyér és rendes kávé. Minden reggel, kis adagokban, a Malom utcában.',
+    seeMenu: 'Az étlap',
+    hoursBtn: 'Nyitvatartás',
+    heroAlt: 'Sorban álló, frissen sült aranybarna croissant-ok sütőpapíron',
+    stamp: ['Friss', 'minden', 'reggel'],
+    bakesTitle: 'Ma a sütőből',
+    bakesNote: 'A kínálat évszakonként változik, de ez a három mindig a pulton van.',
+    bakes: [
+      { name: 'Vajas croissant', note: 'Három nap a tésztától a sütőig. Kívül ropogós, belül lyukacsos.', price: '690 Ft' },
+      { name: 'Kardamomos csiga', note: 'Svéd módra, kardamomos cukorban forgatva. Tizenegyre általában elfogy.', price: '890 Ft' },
+      { name: 'Kovászos kenyér', note: 'Egész éjjel kel, sötétre sütjük. Egészben vagy félben.', price: '1 600 Ft' },
+    ],
+    menuTitle: 'Étlap',
+    menuNote: 'Az árak forintban értendők. Az allergénekről kérdezz a pultnál.',
+    counterAlt: 'Croissant-ok sorban egy pékség üveges pultja mögött',
+    menu: [
+      ['Kávé', [['Espresso', '650'], ['Cortado', '850'], ['Flat white', '990'], ['Cappuccino', '950'], ['Filteres kávé', '890'], ['Zab- vagy mandulatej', '+150']]],
+      ['Pékáru', [['Vajas croissant', '690'], ['Csokis croissant', '790'], ['Kakaós csiga', '750'], ['Sajtos pogácsa (3 db)', '600'], ['Szezonális gyümölcsös táska', '950'], ['Kovászos kenyér', '1 600']]],
+      ['Reggeli', [['Kovászos pirítós vajjal, lekvárral', '1 450'], ['Lágytojás, snidling, pirítós', '2 300'], ['Joghurt, granola, gyümölcs', '1 900'], ['Sonkás-sajtos croissant', '1 750']]],
+    ],
+    storyKicker: 'Történetünk',
+    storyTitle: 'Kis pékség, nagy kemence.',
+    story: [
+      'Egy kemencével, egy használt kávégéppel és egy gondolattal indultunk: minden környéknek jár egy croissant, amiért megéri korán kelni.',
+      'Ma is kézzel, kis adagokban sütünk, és bezárunk, ha minden elfogyott. Gyere korán, és maradj, ameddig jólesik.',
+    ],
+    storyAlt: 'Reggeli napfény egy fa asztalon, kávéscsészével és eszpresszó-szűrőtartóval',
+    visitTitle: 'Gyere el hozzánk',
+    findTitle: 'Itt találsz',
+    address: ['Malom utca 4.', 'Földszint, a régi hídnál'],
+    amenities: 'Akadálymentes bejárat · Kutyabarát · Kártya és készpénz',
+    hoursTitle: 'Nyitvatartás',
+    hours: [['Hétfő', 'Zárva'], ['Kedd – péntek', '7:00 – 17:00'], ['Szombat', '8:00 – 15:00'], ['Vasárnap', '8:00 – 13:00']],
+    ordersTitle: 'Torták és nagyobb rendelések',
+    orders: 'Születésnapra, irodai reggelire vagy egy tálca pogácsára. Szólj a pultnál két nappal előtte.',
+    latteAlt: 'Egy barista keze latte arttal díszített flat whitet tesz le egy sötét pultra',
+    footer: ['A Morzsa kitalált vállalkozás. Ez a weboldal egy koncepció, készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#f5ecdd">
+  <ConceptBar business="Morzsa" />
+
+  <div class="morzsa">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Morzsa">Morzsa<span>{copy.tagline}</span></a>
+        <nav aria-label="Morzsa">
+          <ul>
+            <li><a href="#bakes">{copy.nav[0]}</a></li>
+            <li><a href="#menu">{copy.nav[1]}</a></li>
+            <li><a href="#story">{copy.nav[2]}</a></li>
+          </ul>
+        </nav>
+        <a href="#visit" class="btn btn-small">{copy.findUs}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <p class="kicker">{copy.kicker}</p>
+          <h1>{copy.h1}</h1>
+          <p class="lede">{copy.lede}</p>
+          <div class="hero-actions">
+            <a href="#menu" class="btn">{copy.seeMenu}</a>
+            <a href="#visit" class="btn btn-line">{copy.hoursBtn}</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <Picture
+            src={croissants}
+            formats={['avif', 'webp']}
+            quality={70}
+            widths={[480, 720, 960, 1280]}
+            sizes="(min-width: 60rem) 46vw, 92vw"
+            alt={copy.heroAlt}
+            loading="eager"
+            fetchpriority="high"
+          />
+          <p class="stamp" aria-hidden="true"><span>{copy.stamp[0]}</span> {copy.stamp[1]} <span>{copy.stamp[2]}</span></p>
+        </div>
+      </section>
+
+      <section id="bakes" class="bakes">
+        <div class="wrap">
+          <div class="bakes-head">
+            <h2>{copy.bakesTitle}</h2>
+            <p>{copy.bakesNote}</p>
+          </div>
+          <ol class="bake-list">
+            {
+              copy.bakes.map((b, i) => (
+                <li>
+                  <span class="num">0{i + 1}</span>
+                  <h3>{b.name}</h3>
+                  <p>{b.note}</p>
+                  <span class="price">{b.price}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <section id="menu" class="menu wrap" aria-labelledby="menu-title">
+        <div class="menu-media">
+          <Picture
+            src={counter}
+            formats={['avif', 'webp']}
+            quality={70}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 60rem) 34vw, 92vw"
+            alt={copy.counterAlt}
+          />
+        </div>
+        <div class="menu-body">
+          <h2 id="menu-title">{copy.menuTitle}</h2>
+          <p class="menu-note">{copy.menuNote}</p>
+          <div class="menu-cols">
+            {
+              (copy.menu as [string, string[][]][]).map(([group, items]) => (
+                <div class="menu-group">
+                  <h3>{group}</h3>
+                  <dl>
+                    {items.map(([item, price]) => (
+                      <div>
+                        <dt>{item}</dt>
+                        <dd>{price}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section id="story" class="story">
+        <div class="wrap story-inner">
+          <div class="story-media">
+            <Picture
+              src={coffeeLight}
+              formats={['avif', 'webp']}
+              quality={70}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 60rem) 40vw, 92vw"
+              alt={copy.storyAlt}
+            />
+          </div>
+          <div class="story-copy">
+            <p class="kicker">{copy.storyKicker}</p>
+            <h2>{copy.storyTitle}</h2>
+            {copy.story.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="visit" class="visit wrap" aria-labelledby="visit-title">
+        <div class="visit-card">
+          <h2 id="visit-title">{copy.visitTitle}</h2>
+          <div class="visit-grid">
+            <div>
+              <h3>{copy.findTitle}</h3>
+              <address>
+                {copy.address[0]}<br />
+                {copy.address[1]}
+              </address>
+              <p class="small">{copy.amenities}</p>
+            </div>
+            <div>
+              <h3>{copy.hoursTitle}</h3>
+              <dl class="hours">
+                {
+                  copy.hours.map(([day, time]) => (
+                    <div>
+                      <dt>{day}</dt>
+                      <dd>{time}</dd>
+                    </div>
+                  ))
+                }
+              </dl>
+            </div>
+            <div>
+              <h3>{copy.ordersTitle}</h3>
+              <p>{copy.orders}</p>
+            </div>
+          </div>
+        </div>
+        <div class="visit-media">
+          <Picture
+            src={latte}
+            formats={['avif', 'webp']}
+            quality={70}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 60rem) 36vw, 92vw"
+            alt={copy.latteAlt}
+          />
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot-inner">
+        <p class="logo">Morzsa<span>{copy.tagline}</span></p>
+        <p class="small">
+          {copy.footer[0]}{' '}
+          <a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}
+        </p>
+      </div>
+    </footer>
+  </div>
+</Base>
+
+<style>
+  .morzsa {
+    --cream: #f5ecdd;
+    --flour: #fbf6ee;
+    --espresso: #2a1b12;
+    --cocoa: #5b4334;
+    --crust: #a64b22;
+    --crust-2: #8c3c18;
+    --butter: #ebc86f;
+    --rule: rgb(42 27 18 / 0.16);
+    background: var(--cream);
+    color: var(--cocoa);
+    font-family: 'Figtree Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+  }
+  .wrap {
+    width: min(100% - clamp(2.5rem, 6vw, 5rem), 74rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .logo {
+    font-family: 'Young Serif', Georgia, serif;
+    font-weight: 400;
+    color: var(--espresso);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .kicker {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--crust);
+  }
+  .small {
+    font-size: 0.9rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    background: var(--crust);
+    color: #fff;
+    font-weight: 650;
+    text-decoration: none;
+    transition: background-color 0.18s ease, transform 0.18s ease;
+  }
+  .btn:hover {
+    background: var(--crust-2);
+    transform: translateY(-1px);
+  }
+  .btn-line {
+    background: transparent;
+    color: var(--espresso);
+    box-shadow: inset 0 0 0 1.5px var(--espresso);
+  }
+  .btn-line:hover {
+    background: var(--espresso);
+    color: var(--cream);
+  }
+  .btn-small {
+    min-height: 2.5rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(245 236 221 / 0.94);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 1.6rem;
+    text-decoration: none;
+  }
+  .logo span {
+    font-family: 'Figtree Variable', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--crust);
+    font-weight: 700;
+  }
+  .top ul {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.25rem);
+    padding: 0;
+    list-style: none;
+  }
+  .top nav a {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--espresso);
+  }
+  .top nav a:hover {
+    color: var(--crust);
+  }
+  @media (max-width: 40rem) {
+    .top nav {
+      display: none;
+    }
+    .logo span {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 6vw, 5.5rem);
+  }
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 1.05fr 1fr;
+    }
+  }
+  .hero h1 {
+    margin-top: 1.1rem;
+    font-size: clamp(2.8rem, 1.6rem + 5vw, 5.6rem);
+  }
+  .lede {
+    max-width: 32rem;
+    margin-top: 1.5rem;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .hero-media {
+    position: relative;
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 4.4;
+    object-fit: cover;
+    border-radius: 999px 999px 18px 18px;
+  }
+  .stamp {
+    position: absolute;
+    left: -1.25rem;
+    bottom: 2.5rem;
+    display: grid;
+    place-content: center;
+    width: 8.5rem;
+    height: 8.5rem;
+    border-radius: 50%;
+    background: var(--butter);
+    color: var(--espresso);
+    font-family: 'Young Serif', serif;
+    font-size: 1.05rem;
+    line-height: 1.1;
+    text-align: center;
+    transform: rotate(-10deg);
+    box-shadow: 0 10px 30px -12px rgb(42 27 18 / 0.5);
+  }
+  .stamp span {
+    display: block;
+    font-size: 1.45rem;
+  }
+  @media (max-width: 40rem) {
+    .stamp {
+      left: auto;
+      right: 0.75rem;
+      bottom: -1.5rem;
+      width: 6.5rem;
+      height: 6.5rem;
+      font-size: 0.85rem;
+    }
+    .stamp span {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Today */
+  .bakes {
+    background: var(--espresso);
+    color: #e9dccb;
+    padding-block: clamp(4rem, 8vw, 6.5rem);
+  }
+  .bakes h2,
+  .bakes h3 {
+    color: var(--flour);
+  }
+  .bakes-head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  @media (min-width: 50rem) {
+    .bakes-head {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+  .bakes h2 {
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.5rem);
+  }
+  .bake-list {
+    display: grid;
+    gap: 1px;
+    padding: 0;
+    list-style: none;
+    background: rgb(251 246 238 / 0.15);
+    border-block: 1px solid rgb(251 246 238 / 0.15);
+  }
+  @media (min-width: 50rem) {
+    .bake-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .bake-list li {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.75rem;
+    padding: 2rem 1.5rem 2rem 0;
+    background: var(--espresso);
+  }
+  @media (min-width: 50rem) {
+    .bake-list li + li {
+      padding-left: 1.75rem;
+    }
+  }
+  .num {
+    color: var(--butter);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+  }
+  .bake-list h3 {
+    font-size: 1.65rem;
+  }
+  .price {
+    color: var(--butter);
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Menu */
+  .menu {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+  @media (min-width: 60rem) {
+    .menu {
+      grid-template-columns: 0.75fr 1.5fr;
+      align-items: start;
+    }
+    .menu-media {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+  .menu-media :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  .menu h2 {
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.5rem);
+  }
+  .menu-note {
+    margin-top: 0.75rem;
+    max-width: 30rem;
+  }
+  .menu-cols {
+    display: grid;
+    gap: 2.5rem 3rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 42rem) {
+    .menu-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .menu-group h3 {
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
+    border-bottom: 2px solid var(--espresso);
+    font-size: 1.4rem;
+  }
+  .menu-group dl > div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-block: 0.55rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .menu-group dt {
+    color: var(--espresso);
+    font-weight: 550;
+  }
+  .menu-group dd {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    color: var(--crust);
+    white-space: nowrap;
+  }
+
+  /* Story */
+  .story {
+    background: var(--flour);
+    padding-block: clamp(4rem, 8vw, 7rem);
+    border-block: 1px solid var(--rule);
+  }
+  .story-inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .story-inner {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+  .story-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 18px 18px 999px 999px;
+  }
+  .story h2 {
+    margin-block: 1rem 1.5rem;
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.6rem);
+  }
+  .story-copy p + p {
+    margin-top: 1rem;
+  }
+  .story-copy p:not(.kicker) {
+    max-width: 34rem;
+    font-size: 1.15rem;
+  }
+
+  /* Visit */
+  .visit {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+  @media (min-width: 60rem) {
+    .visit {
+      grid-template-columns: 1.6fr 1fr;
+    }
+  }
+  .visit-card {
+    padding: clamp(1.75rem, 4vw, 3.25rem);
+    border-radius: 18px;
+    background: var(--crust);
+    color: #fbe9dc;
+  }
+  .visit-card h2,
+  .visit-card h3 {
+    color: #fff;
+  }
+  .visit-card h2 {
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.4rem);
+    margin-bottom: 2rem;
+  }
+  .visit-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 42rem) {
+    .visit-grid {
+      grid-template-columns: 1fr 1.2fr;
+    }
+    .visit-grid > :last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  .visit-card h3 {
+    margin-bottom: 0.6rem;
+    font-size: 1.25rem;
+  }
+  address {
+    font-style: normal;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  .visit-card .small {
+    margin-top: 0.6rem;
+  }
+  .hours > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.4rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  }
+  .hours dd {
+    color: #fff;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+  .visit-media :global(img) {
+    width: 100%;
+    height: 100%;
+    min-height: 18rem;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  .visit-card :focus-visible {
+    outline-color: #fff;
+  }
+
+  /* Footer */
+  .foot {
+    padding-block: 2.5rem 3rem;
+    border-top: 1px solid var(--rule);
+  }
+  .foot-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .foot a {
+    color: var(--espresso);
+    font-weight: 650;
+  }
+</style>

@@ -1,0 +1,823 @@
+---
+import '@fontsource-variable/instrument-sans/wght.css';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import { getLang, localePath } from '../i18n';
+import desk from '../assets/photos/ledger-desk.jpg';
+
+const lang = getLang(Astro.url);
+
+const copy = {
+  en: {
+    title: 'Ledger & Light — Bookkeeping for freelancers (design concept by Mojtaba Maleki)',
+    description: 'A design concept for a fictional bookkeeping studio for freelancers and small creative teams, designed and built by Mojtaba Maleki.',
+    nav: ['Services', 'Pricing', 'Questions'],
+    navCta: 'Book an intro call',
+    label: 'Bookkeeping for freelancers & small studios',
+    h1: 'Calm, clear books. So you can get back to the work you love.',
+    lede: 'We handle the receipts, returns and deadlines for independent professionals and small creative teams. In plain language, for a fixed monthly fee.',
+    heroCta: 'Book a free intro call',
+    seePricing: 'See pricing',
+    deskAlt: 'A tidy white desk with a laptop, notebooks in a holder and a small lamp',
+    status: ['This month', 'Receipts reconciled', 'VAT return', 'Filed', 'Next check-in', '14 Nov'],
+    servicesLabel: 'What we do',
+    servicesTitle: 'Three things, done properly.',
+    services: [
+      ['Monthly bookkeeping', 'Send receipts and invoices however suits you. We keep your books tidy every month.'],
+      ['Tax & VAT returns', 'Deadlines tracked, figures checked twice, returns filed on time.'],
+      ['Cash-flow check-ins', 'A short call each quarter: what came in, what went out, what to set aside.'],
+    ],
+    stepsLabel: 'How it works',
+    stepsTitle: 'Switching takes about a week.',
+    steps: [
+      ['Intro call', 'Twenty minutes to understand your work. Free, no obligation.'],
+      ['Clear quote', 'A fixed monthly fee in writing, so you always know what you pay.'],
+      ['Hand it over', 'We set up your books and take it from there.'],
+    ],
+    pricingLabel: 'Pricing',
+    pricingTitle: 'Fixed monthly fees. No surprises.',
+    perMonth: '/ month',
+    featured: 'Most chosen',
+    plans: [
+      { name: 'Solo', price: '€90', who: 'Freelancers with simple finances', items: ['Monthly bookkeeping', 'Annual tax return', 'Email support'] },
+      { name: 'Studio', price: '€180', who: 'Small studios, up to 5 people', items: ['Everything in Solo', 'VAT returns', 'Payroll for up to 5', 'Quarterly check-in'], featured: true },
+      { name: 'Growing', price: 'Custom', who: 'Online shops & larger teams', items: ['Everything in Studio', 'Inventory & multi-currency', 'Monthly reporting'] },
+    ],
+    faqLabel: 'Questions',
+    faqTitle: 'Good to know',
+    faqs: [
+      ['Do I need to change my invoicing tool?', 'No. We work with the tools most freelancers already use.'],
+      ['What if I’m behind on my books?', 'Very common. We start with a catch-up, quoted separately.'],
+      ['Can I cancel?', 'Yes, with a month’s notice. No long contracts.'],
+    ],
+    contactTitle: 'Let’s make your books boring. In a good way.',
+    contactText: 'Tell us a little about your work and we’ll suggest a time for a free 20-minute call.',
+    fields: ['Your name', 'Email', 'What do you do?'],
+    placeholder: 'e.g. freelance photographer, two-person design studio',
+    submit: 'Request a call',
+    formNote: 'Concept preview. This form doesn’t send anything.',
+    thanks: ['Thanks', '! A real site would send this to the studio. This is a concept, so nothing was sent.'],
+    footer: ['Ledger & Light is a fictional business. This website is a design concept by', 'Photography via Unsplash.'],
+  },
+  hu: {
+    title: 'Ledger & Light — Könyvelés szabadúszóknak (Mojtaba Maleki koncepciója)',
+    description: 'Egy kitalált, szabadúszóknak és kis kreatív csapatoknak szóló könyvelőiroda weboldal-koncepciója. Tervezte és készítette: Mojtaba Maleki.',
+    nav: ['Szolgáltatások', 'Árak', 'Kérdések'],
+    navCta: 'Hívást kérek',
+    label: 'Könyvelés szabadúszóknak és kis stúdióknak',
+    h1: 'Nyugodt, átlátható könyvelés. Hogy a munkádra figyelhess.',
+    lede: 'Intézzük a bizonylatokat, bevallásokat és határidőket szabadúszóknak és kis kreatív csapatoknak. Érthetően, fix havidíjért.',
+    heroCta: 'Ingyenes bemutatkozó hívás',
+    seePricing: 'Árak',
+    deskAlt: 'Rendezett fehér íróasztal laptoppal, tartóban álló jegyzetfüzetekkel és egy kis lámpával',
+    status: ['Ebben a hónapban', 'Egyeztetett bizonylatok', 'ÁFA-bevallás', 'Beadva', 'Következő egyeztetés', 'nov. 14.'],
+    servicesLabel: 'Amit csinálunk',
+    servicesTitle: 'Három dolog, rendesen.',
+    services: [
+      ['Havi könyvelés', 'Küldd a bizonylatokat, ahogy neked kényelmes. Mi minden hónapban rendben tartjuk a könyveidet.'],
+      ['Adó- és ÁFA-bevallás', 'Figyeljük a határidőket, kétszer ellenőrzünk, és időben beadjuk.'],
+      ['Negyedéves egyeztetés', 'Rövid hívás negyedévente: mi jött be, mi ment ki, mennyit tegyél félre.'],
+    ],
+    stepsLabel: 'Hogyan működik',
+    stepsTitle: 'A váltás nagyjából egy hét.',
+    steps: [
+      ['Bemutatkozó hívás', 'Húsz perc, hogy megértsük a munkádat. Ingyenes, kötelezettség nélkül.'],
+      ['Világos ajánlat', 'Fix havidíj írásban, így mindig tudod, mennyit fizetsz.'],
+      ['Átadod', 'Beállítjuk a könyvelésedet, és onnantól mi visszük.'],
+    ],
+    pricingLabel: 'Árak',
+    pricingTitle: 'Fix havidíj. Meglepetések nélkül.',
+    perMonth: '/ hó',
+    featured: 'Legnépszerűbb',
+    plans: [
+      { name: 'Solo', price: '35 000 Ft', who: 'Egyszerű pénzügyű szabadúszóknak', items: ['Havi könyvelés', 'Éves adóbevallás', 'E-mailes támogatás'] },
+      { name: 'Stúdió', price: '70 000 Ft', who: 'Kis stúdióknak, legfeljebb 5 fővel', items: ['Minden, ami a Soloban', 'ÁFA-bevallások', 'Bérszámfejtés max. 5 főre', 'Negyedéves egyeztetés'], featured: true },
+      { name: 'Növekvő', price: 'Egyedi', who: 'Webshopoknak és nagyobb csapatoknak', items: ['Minden, ami a Stúdióban', 'Készlet és több pénznem', 'Havi riportok'] },
+    ],
+    faqLabel: 'Kérdések',
+    faqTitle: 'Jó tudni',
+    faqs: [
+      ['Le kell cserélnem a számlázóprogramomat?', 'Nem. Azokkal az eszközökkel dolgozunk, amiket a legtöbb szabadúszó már használ.'],
+      ['Mi van, ha le vagyok maradva a könyveléssel?', 'Gyakori. Egy rendbetétellel kezdünk, ezt külön árazzuk.'],
+      ['Fel tudom mondani?', 'Igen, egy hónapos felmondási idővel. Nincs hosszú szerződés.'],
+    ],
+    contactTitle: 'Legyenek unalmasak a könyveid. A jó értelemben.',
+    contactText: 'Írj pár szót a munkádról, és javaslunk egy időpontot egy ingyenes, 20 perces hívásra.',
+    fields: ['Neved', 'E-mail', 'Mivel foglalkozol?'],
+    placeholder: 'pl. szabadúszó fotós, kétfős design stúdió',
+    submit: 'Hívást kérek',
+    formNote: 'Koncepció előnézet. Ez az űrlap nem küld el semmit.',
+    thanks: ['Köszönjük', '! Egy valódi oldalon ez eljutna az irodához. Ez egy koncepció, így semmi nem lett elküldve.'],
+    footer: ['A Ledger & Light kitalált vállalkozás. Ez a weboldal egy koncepció, készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+
+const custom = lang === 'hu' ? 'Egyedi' : 'Custom';
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#fafaf7">
+  <ConceptBar business="Ledger & Light" />
+
+  <div class="ll">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Ledger & Light">
+          <span class="mark" aria-hidden="true"></span>Ledger &amp; Light
+        </a>
+        <nav aria-label="Ledger & Light">
+          <ul>
+            <li><a href="#services">{copy.nav[0]}</a></li>
+            <li><a href="#pricing">{copy.nav[1]}</a></li>
+            <li><a href="#questions">{copy.nav[2]}</a></li>
+          </ul>
+        </nav>
+        <a href="#contact" class="btn btn-small">{copy.navCta}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <p class="label">{copy.label}</p>
+        <h1>{copy.h1}</h1>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="lede">{copy.lede}</p>
+            <div class="hero-actions">
+              <a href="#contact" class="btn">{copy.heroCta}</a>
+              <a href="#pricing" class="text-link">{copy.seePricing} <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <Picture
+              src={desk}
+              formats={['avif', 'webp']}
+              quality={70}
+              widths={[480, 720, 960, 1280]}
+              sizes="(min-width: 60rem) 55vw, 92vw"
+              alt={copy.deskAlt}
+              loading="eager"
+              fetchpriority="high"
+            />
+            <div class="status-card" aria-hidden="true">
+              <p class="status-title">{copy.status[0]}</p>
+              <ul>
+                <li><span class="dot ok"></span>{copy.status[1]} <b>42</b></li>
+                <li><span class="dot ok"></span>{copy.status[2]} <b>{copy.status[3]}</b></li>
+                <li><span class="dot"></span>{copy.status[4]} <b>{copy.status[5]}</b></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="services wrap" aria-labelledby="services-title">
+        <div class="split-head">
+          <p class="label">{copy.servicesLabel}</p>
+          <h2 id="services-title">{copy.servicesTitle}</h2>
+        </div>
+        <ol class="service-grid">
+          {
+            copy.services.map(([title, text], i) => (
+              <li>
+                <span class="idx">0{i + 1}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="steps-band">
+        <div class="wrap">
+          <div class="split-head">
+            <p class="label">{copy.stepsLabel}</p>
+            <h2>{copy.stepsTitle}</h2>
+          </div>
+          <ol class="steps">
+            {
+              copy.steps.map(([title, text], i) => (
+                <li>
+                  <span class="step-n">{i + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <section id="pricing" class="pricing wrap" aria-labelledby="pricing-title">
+        <div class="split-head">
+          <p class="label">{copy.pricingLabel}</p>
+          <h2 id="pricing-title">{copy.pricingTitle}</h2>
+        </div>
+        <div class="plans">
+          {
+            copy.plans.map((p) => (
+              <article class:list={['plan', { featured: 'featured' in p && p.featured }]}>
+                {'featured' in p && p.featured && <p class="badge">{copy.featured}</p>}
+                <h3>{p.name}</h3>
+                <p class="who">{p.who}</p>
+                <p class="amount">
+                  {p.price}
+                  {p.price !== custom && <span>{copy.perMonth}</span>}
+                </p>
+                <ul>
+                  {p.items.map((it) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="questions" class="faq wrap" aria-labelledby="faq-title">
+        <div class="split-head">
+          <p class="label">{copy.faqLabel}</p>
+          <h2 id="faq-title">{copy.faqTitle}</h2>
+        </div>
+        <div class="faq-list">
+          {
+            copy.faqs.map(([q, a]) => (
+              <details name="ll-faq">
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="contact" class="contact">
+        <div class="wrap contact-inner">
+          <div>
+            <h2>{copy.contactTitle}</h2>
+            <p>{copy.contactText}</p>
+          </div>
+          <form class="contact-form" data-intro data-thanks={copy.thanks[0]} data-thanks-rest={copy.thanks[1]}>
+            <label>
+              <span>{copy.fields[0]}</span>
+              <input name="name" autocomplete="name" required />
+            </label>
+            <label>
+              <span>{copy.fields[1]}</span>
+              <input name="email" type="email" autocomplete="email" required />
+            </label>
+            <label>
+              <span>{copy.fields[2]}</span>
+              <textarea name="about" rows="3" placeholder={copy.placeholder}></textarea>
+            </label>
+            <button class="btn btn-light" type="submit">{copy.submit}</button>
+            <p class="form-note">{copy.formNote}</p>
+            <p class="form-result" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo"><span class="mark" aria-hidden="true"></span>Ledger &amp; Light</p>
+      <p>
+        {copy.footer[0]}{' '}
+        <a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}
+      </p>
+    </footer>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-intro]');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = String(new FormData(form).get('name') || '').trim();
+    const result = form.querySelector('.form-result');
+    if (result) result.textContent = `${form.dataset.thanks}${name ? `, ${name}` : ''}${form.dataset.thanksRest}`;
+  });
+</script>
+
+<style>
+  .ll {
+    --bg: #fafaf7;
+    --ink: #0e1b16;
+    --text: #3d4a44;
+    --green: #1f4d3a;
+    --green-2: #173a2c;
+    --mint: #d3e8da;
+    --line: #dde3df;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+  }
+  .wrap {
+    width: min(100% - clamp(2.5rem, 6vw, 5rem), 78rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+  }
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.35rem;
+    border: 0;
+    border-radius: 6px;
+    background: var(--green);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.18s ease;
+  }
+  .btn:hover {
+    background: var(--green-2);
+  }
+  .btn-small {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.92rem;
+  }
+  .btn-light {
+    background: var(--mint);
+    color: var(--ink);
+  }
+  .btn-light:hover {
+    background: #fff;
+  }
+  .text-link {
+    color: var(--ink);
+    font-weight: 600;
+    text-underline-offset: 0.25em;
+  }
+  .ll :focus-visible {
+    outline-color: var(--green);
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(250 250 247 / 0.94);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    font-weight: 650;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .mark {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--green) 50%, var(--mint) 50%);
+  }
+  .top ul {
+    display: flex;
+    gap: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .top nav a {
+    color: var(--text);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .top nav a:hover {
+    color: var(--ink);
+  }
+  @media (max-width: 46rem) {
+    .top nav {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    padding-block: clamp(3rem, 7vw, 6rem) clamp(3rem, 6vw, 5rem);
+  }
+  .hero h1 {
+    max-width: 16ch;
+    margin-top: 1.25rem;
+    font-size: clamp(2.6rem, 1.4rem + 5vw, 5.75rem);
+  }
+  .hero-grid {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+  }
+  @media (min-width: 60rem) {
+    .hero-grid {
+      grid-template-columns: 1fr 1.6fr;
+      align-items: start;
+    }
+  }
+  .lede {
+    max-width: 30rem;
+    font-size: clamp(1.1rem, 1rem + 0.3vw, 1.25rem);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .hero-media {
+    position: relative;
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: 50% 65%;
+    border-radius: 6px;
+  }
+  .status-card {
+    position: absolute;
+    right: clamp(0.75rem, 3vw, 1.75rem);
+    bottom: clamp(-2rem, -3vw, -1rem);
+    width: min(17rem, 75%);
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 20px 40px -20px rgb(14 27 22 / 0.35);
+    font-size: 0.9rem;
+  }
+  @media (max-width: 40rem) {
+    .status-card {
+      position: relative;
+      right: auto;
+      bottom: auto;
+      width: auto;
+      margin: -2.5rem 1rem 0 auto;
+      max-width: 16rem;
+    }
+  }
+  .status-title {
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+    font-weight: 650;
+  }
+  .status-card ul {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0;
+    list-style: none;
+  }
+  .status-card li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .status-card b {
+    margin-left: auto;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #c9d2cd;
+  }
+  .dot.ok {
+    background: #2f8a5f;
+  }
+
+  /* Shared section heads */
+  .split-head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ink);
+  }
+  @media (min-width: 50rem) {
+    .split-head {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  .split-head h2 {
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+    max-width: 18ch;
+  }
+
+  .services,
+  .pricing,
+  .faq {
+    padding-block: clamp(4.5rem, 9vw, 7.5rem);
+  }
+  .service-grid {
+    display: grid;
+    gap: 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 50rem) {
+    .service-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  .idx {
+    display: block;
+    margin-bottom: 1.5rem;
+    color: var(--green);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .service-grid h3 {
+    margin-bottom: 0.75rem;
+    font-size: 1.6rem;
+  }
+
+  /* Steps */
+  .steps-band {
+    padding-block: clamp(4.5rem, 9vw, 7.5rem);
+    background: var(--green);
+    color: #d6e6dc;
+  }
+  .steps-band h2,
+  .steps-band h3 {
+    color: #fff;
+  }
+  .steps-band .label {
+    color: var(--mint);
+  }
+  .steps-band .split-head {
+    border-top-color: rgb(255 255 255 / 0.5);
+  }
+  .steps {
+    display: grid;
+    gap: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 50rem) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .steps li {
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.2);
+  }
+  .step-n {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1.25rem;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--green-2);
+    font-weight: 700;
+  }
+  .steps h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.45rem;
+  }
+
+  /* Pricing */
+  .plans {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 56rem) {
+    .plans {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .plan.featured {
+    border-color: var(--green);
+    box-shadow: inset 0 0 0 1px var(--green);
+  }
+  .badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 2rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    background: var(--green);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .plan h3 {
+    font-size: 1.5rem;
+  }
+  .who {
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+  }
+  .amount {
+    margin-block: 1.5rem;
+    color: var(--ink);
+    font-size: 2.6rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .amount span {
+    margin-left: 0.3rem;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .plan ul {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+  .plan li {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .plan li::before {
+    content: '';
+    flex: none;
+    width: 0.9rem;
+    height: 0.5rem;
+    margin-top: 0.45rem;
+    border-left: 2px solid var(--green);
+    border-bottom: 2px solid var(--green);
+    transform: rotate(-45deg);
+  }
+
+  /* FAQ */
+  .faq {
+    padding-top: 0;
+  }
+  .faq-list {
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 50rem) {
+    .faq-list {
+      margin-left: calc(33.333% + 0.33rem);
+    }
+  }
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.25rem;
+    color: var(--ink);
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    color: var(--green);
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  details[open] summary::after {
+    content: '–';
+  }
+  details p {
+    max-width: 40rem;
+    padding-bottom: 1.25rem;
+  }
+
+  /* Contact */
+  .contact {
+    padding-block: clamp(4.5rem, 9vw, 7.5rem);
+    background: var(--ink);
+    color: #b9c5bf;
+  }
+  .contact-inner {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 56rem) {
+    .contact-inner {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .contact h2 {
+    color: #fff;
+    font-size: clamp(2.2rem, 1.4rem + 3vw, 4rem);
+    max-width: 14ch;
+  }
+  .contact-inner > div p {
+    max-width: 28rem;
+    margin-top: 1.25rem;
+    font-size: 1.15rem;
+  }
+  .contact-form {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .contact-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .contact-form label span {
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.06);
+    color: #fff;
+    font: inherit;
+  }
+  input:focus,
+  textarea:focus {
+    border-color: var(--mint);
+    outline: 2px solid var(--mint);
+    outline-offset: 1px;
+  }
+  ::placeholder {
+    color: #8b9993;
+  }
+  .contact-form .btn {
+    justify-self: start;
+  }
+  .form-note {
+    font-size: 0.88rem;
+  }
+  .form-result:empty {
+    display: none;
+  }
+  .form-result {
+    padding: 0.9rem 1rem;
+    border: 1px dashed var(--mint);
+    border-radius: 6px;
+    color: #fff;
+  }
+  .contact :focus-visible {
+    outline-color: var(--mint);
+  }
+
+  /* Footer */
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2.5rem 3rem;
+    font-size: 0.9rem;
+  }
+  .foot a {
+    color: var(--ink);
+    font-weight: 600;
+  }
+</style>

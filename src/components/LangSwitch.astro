@@ -1,0 +1,105 @@
+---
+import { getLang, stripLang, localePath, languages, type Lang } from '../i18n';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  /** Visual variant: on light or dark backgrounds. */
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+const { tone = 'light', class: className } = Astro.props;
+const lang = getLang(Astro.url);
+const base = stripLang(Astro.url.pathname);
+const options = (Object.keys(languages) as Lang[]).map((code) => ({
+  code,
+  href: localePath(code, base),
+  name: languages[code],
+}));
+---
+
+<nav class:list={['lang-switch', `lang-switch--${tone}`, className]} aria-label={ui[lang].nav.language}>
+  {
+    options.map((o) => (
+      <a
+        href={o.href}
+        hreflang={o.code}
+        lang={o.code}
+        data-set-lang={o.code}
+        aria-current={o.code === lang ? 'true' : undefined}
+        title={o.name}
+      >
+        <span aria-hidden="true">{o.code.toUpperCase()}</span>
+        <span class="visually-hidden">{o.name}</span>
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  // Remember an explicit language choice so it wins over the browser default from now on.
+  document.querySelectorAll<HTMLAnchorElement>('[data-set-lang]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        localStorage.setItem('lang', link.dataset.setLang!);
+      } catch {}
+      // Keep the visitor at the same section when switching.
+      if (location.hash && !link.hash) link.hash = location.hash;
+    });
+  });
+</script>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 999px;
+    border: 1px solid var(--ls-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .lang-switch--light {
+    --ls-border: rgb(21 22 26 / 0.18);
+    --ls-fg: #65645f;
+    --ls-active-bg: #15161a;
+    --ls-active-fg: #f4f0e8;
+  }
+  .lang-switch--dark {
+    --ls-border: rgb(255 255 255 / 0.22);
+    --ls-fg: #bdb9b0;
+    --ls-active-bg: #f4f0e8;
+    --ls-active-fg: #15161a;
+  }
+  a {
+    display: grid;
+    place-items: center;
+    min-width: 2.1rem;
+    min-height: 1.9rem;
+    padding: 0 0.45rem;
+    border-radius: 999px;
+    color: var(--ls-fg);
+    text-decoration: none;
+    transition: background-color 0.16s ease, color 0.16s ease;
+  }
+  a:hover {
+    color: var(--ls-active-bg);
+  }
+  .lang-switch--dark a:hover {
+    color: #fff;
+  }
+  a[aria-current] {
+    background: var(--ls-active-bg);
+    color: var(--ls-active-fg);
+  }
+  a[aria-current]:hover {
+    color: var(--ls-active-fg);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

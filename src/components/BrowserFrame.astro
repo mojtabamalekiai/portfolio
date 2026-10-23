@@ -1,0 +1,84 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  label: string;
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+}
+const { src, alt, label, sizes, eager = false, class: className } = Astro.props;
+---
+
+<figure class:list={['browser', className]}>
+  <div class="bar" aria-hidden="true">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="url">{label}</span>
+  </div>
+  <Picture
+    src={src}
+    alt={alt}
+    formats={['avif', 'webp']}
+    quality={72}
+    widths={[480, 720, 960, 1440]}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+  />
+</figure>
+
+<style>
+  .browser {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-m);
+    background: var(--card);
+    box-shadow: var(--shadow-l);
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    height: 2.1rem;
+    padding-inline: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    background: #f7f4ee;
+  }
+  .bar::after {
+    content: '';
+    width: 2.25rem;
+  }
+  .dots {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .dots i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #d9d3c7;
+  }
+  .url {
+    justify-self: center;
+    max-width: 100%;
+    padding: 0.15rem 0.9rem;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: rgb(21 22 26 / 0.05);
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .browser :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top;
+  }
+</style>

@@ -1,0 +1,622 @@
+---
+import '@fontsource/instrument-serif';
+import '@fontsource/instrument-serif/400-italic';
+import '@fontsource-variable/inter-tight/wght.css';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import { getLang, localePath } from '../i18n';
+import living from '../assets/photos/kova-living.jpg';
+import kitchen from '../assets/photos/kova-kitchen.jpg';
+import bedroom from '../assets/photos/kova-bedroom.jpg';
+import dining from '../assets/photos/kova-dining.jpg';
+import boho from '../assets/photos/kova-boho.jpg';
+
+const lang = getLang(Astro.url);
+
+const copy = {
+  en: {
+    title: 'Kova Interiors (design concept by Mojtaba Maleki)',
+    description: 'A design concept for a fictional residential interior design studio, designed and built by Mojtaba Maleki.',
+    tagline: 'interiors',
+    nav: ['Work', 'Studio', 'Contact'],
+    heroLabel: 'Residential interior design · Budapest',
+    h1: ['Rooms that feel', 'like you.'],
+    heroAlt: 'A calm, neutral living room with a cream sofa, a sculptural stone coffee table and two framed abstract prints',
+    scroll: 'Selected work',
+    statement: 'We design calm, lived-in homes. Natural materials, honest light and furniture that ages well.',
+    stats: [['Since', '2016'], ['Homes', '120+'], ['Team', '4']],
+    workTitle: 'Selected work',
+    projects: [
+      { img: 'kitchen', name: 'Attic Kitchen', place: 'Óbuda', year: '2025', alt: 'An attic kitchen with white walls, walnut cabinetry and globe pendant lights' },
+      { img: 'bedroom', name: 'Linen Suite', place: 'Buda Hills', year: '2024', alt: 'A soft cream bedroom with an upholstered bed, linen bedding and sheer curtains' },
+      { img: 'dining', name: 'Riverside Flat', place: 'Újlipótváros', year: '2024', alt: 'A bright minimal dining area with a sculptural table and a white handleless kitchen' },
+      { img: 'boho', name: 'Summer House', place: 'Lake Balaton', year: '2023', alt: 'A sunlit living room with rattan wall decor, a linen sofa and a reclaimed wood coffee table' },
+    ],
+    studioTitle: 'How we work',
+    services: [
+      ['Full design', 'From floor plan to final cushion. We manage the whole project, including trades.'],
+      ['Furnish & style', 'For finished spaces that need furniture, lighting and soul.'],
+      ['Consultation', 'Two hours in your home with a clear plan to take forward.'],
+    ],
+    contactTitle: ['Tell us about', 'your space.'],
+    contactText: 'A few lines about your home and what you’d like to change. We reply within two working days.',
+    fields: ['Name', 'Email', 'Your space'],
+    placeholder: 'e.g. a 70 m² flat in district XIII, living room and kitchen',
+    submit: 'Start a project',
+    formNote: 'Concept preview. This form doesn’t send anything.',
+    thanks: 'Thank you. On a real site this would reach the studio. This is a concept, so nothing was sent.',
+    footer: ['Kova is a fictional business. This website is a design concept by', 'Photography via Unsplash.'],
+  },
+  hu: {
+    title: 'Kova Interiors (Mojtaba Maleki koncepciója)',
+    description: 'Egy kitalált lakberendező stúdió weboldal-koncepciója. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'belsőépítészet',
+    nav: ['Munkák', 'Stúdió', 'Kapcsolat'],
+    heroLabel: 'Lakóterek belsőépítészete · Budapest',
+    h1: ['Terek, amelyek', 'rólad szólnak.'],
+    heroAlt: 'Nyugodt, natúr tónusú nappali krémszínű kanapéval, szobrászi kő dohányzóasztallal és két bekeretezett absztrakt képpel',
+    scroll: 'Válogatott munkák',
+    statement: 'Nyugodt, élhető otthonokat tervezünk. Természetes anyagok, őszinte fények és bútorok, amelyek szépen öregszenek.',
+    stats: [['Alapítva', '2016'], ['Otthon', '120+'], ['Csapat', '4']],
+    workTitle: 'Válogatott munkák',
+    projects: [
+      { img: 'kitchen', name: 'Tetőtéri konyha', place: 'Óbuda', year: '2025', alt: 'Tetőtéri konyha fehér falakkal, diófa szekrényekkel és gömb függőlámpákkal' },
+      { img: 'bedroom', name: 'Len lakosztály', place: 'Budai-hegyek', year: '2024', alt: 'Puha, krémszínű hálószoba kárpitozott ággyal, lenvászon ágyneművel és fátyolfüggönnyel' },
+      { img: 'dining', name: 'Parti lakás', place: 'Újlipótváros', year: '2024', alt: 'Világos, minimalista étkező szobrászi asztallal és fehér, fogantyú nélküli konyhával' },
+      { img: 'boho', name: 'Nyaraló', place: 'Balaton', year: '2023', alt: 'Napfényes nappali rattan faldíszekkel, lenvászon kanapéval és bontott fa dohányzóasztallal' },
+    ],
+    studioTitle: 'Hogyan dolgozunk',
+    services: [
+      ['Teljes tervezés', 'Az alaprajztól az utolsó díszpárnáig. Az egész projektet visszük, a kivitelezőkkel együtt.'],
+      ['Berendezés és styling', 'Kész terekhez, amelyekből hiányzik a bútor, a fény és a lélek.'],
+      ['Konzultáció', 'Két óra nálad, és egy világos terv, amivel tovább tudsz lépni.'],
+    ],
+    contactTitle: ['Meséld el,', 'milyen a tered.'],
+    contactText: 'Pár sor az otthonodról és arról, min változtatnál. Két munkanapon belül válaszolunk.',
+    fields: ['Név', 'E-mail', 'A tered'],
+    placeholder: 'pl. 70 m²-es lakás a XIII. kerületben, nappali és konyha',
+    submit: 'Indítsuk el',
+    formNote: 'Koncepció előnézet. Ez az űrlap nem küld el semmit.',
+    thanks: 'Köszönjük. Egy valódi oldalon ez eljutna a stúdióhoz. Ez egy koncepció, így semmi nem lett elküldve.',
+    footer: ['A Kova kitalált vállalkozás. Ez a weboldal egy koncepció, készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+
+const images = { kitchen, bedroom, dining, boho };
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#1d1c1a">
+  <ConceptBar business="Kova" />
+
+  <div class="kv">
+    <section class="hero" id="top">
+      <Picture src={living} formats={['avif', 'webp']} quality={64} widths={[640, 960, 1400, 1920]} sizes="100vw" alt={copy.heroAlt} loading="eager" fetchpriority="high" class="hero-img" />
+      <header class="top">
+        <a href="#top" class="logo" aria-label="Kova Interiors">KOVA<span>{copy.tagline}</span></a>
+        <nav aria-label="Kova">
+          <ul>
+            <li><a href="#work">{copy.nav[0]}</a></li>
+            <li><a href="#studio">{copy.nav[1]}</a></li>
+            <li><a href="#contact">{copy.nav[2]}</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div class="hero-text">
+        <p class="label">{copy.heroLabel}</p>
+        <h1>{copy.h1[0]} <em>{copy.h1[1]}</em></h1>
+      </div>
+      <a href="#work" class="scroll">{copy.scroll} <span aria-hidden="true">↓</span></a>
+    </section>
+
+    <main>
+      <section class="intro wrap">
+        <p class="statement">{copy.statement}</p>
+        <dl class="stats">
+          {
+            copy.stats.map(([k, v]) => (
+              <div>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section id="work" class="work wrap" aria-labelledby="work-title">
+        <h2 id="work-title" class="section-label">{copy.workTitle}</h2>
+        <ul class="grid">
+          {
+            copy.projects.map((p, i) => (
+              <li class={`p p${i + 1}`}>
+                <figure>
+                  <div class="frame">
+                    <Picture
+                      src={images[p.img as keyof typeof images]}
+                      formats={['avif', 'webp']}
+                      quality={66}
+                      widths={[480, 720, 960, 1280]}
+                      sizes={i === 0 ? '(min-width: 60rem) 60vw, 92vw' : '(min-width: 60rem) 36vw, 92vw'}
+                      alt={p.alt}
+                    />
+                  </div>
+                  <figcaption>
+                    <span class="num">0{i + 1}</span>
+                    <span class="name">{p.name}</span>
+                    <span class="place">
+                      {p.place}, {p.year}
+                    </span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section id="studio" class="studio">
+        <div class="wrap studio-inner">
+          <h2>{copy.studioTitle}</h2>
+          <ol>
+            {
+              copy.services.map(([t, d], i) => (
+                <li>
+                  <span class="num">0{i + 1}</span>
+                  <h3>{t}</h3>
+                  <p>{d}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <section id="contact" class="contact wrap" aria-labelledby="contact-title">
+        <div>
+          <h2 id="contact-title">{copy.contactTitle[0]} <em>{copy.contactTitle[1]}</em></h2>
+          <p>{copy.contactText}</p>
+        </div>
+        <form class="form" data-kova data-thanks={copy.thanks}>
+          <label><span>{copy.fields[0]}</span><input name="name" autocomplete="name" required /></label>
+          <label><span>{copy.fields[1]}</span><input name="email" type="email" autocomplete="email" required /></label>
+          <label><span>{copy.fields[2]}</span><textarea name="space" rows="3" placeholder={copy.placeholder}></textarea></label>
+          <button type="submit">{copy.submit} <span aria-hidden="true">→</span></button>
+          <p class="note">{copy.formNote}</p>
+          <p class="result" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo">KOVA<span>{copy.tagline}</span></p>
+      <p>
+        {copy.footer[0]}{' '}
+        <a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}
+      </p>
+    </footer>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-kova]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const r = form.querySelector('.result');
+    if (r) r.textContent = form.dataset.thanks ?? '';
+  });
+</script>
+
+<style>
+  .kv {
+    --bone: #f3f1ec;
+    --paper: #faf9f6;
+    --char: #1d1c1a;
+    --stone: #6f6a61;
+    --rule: rgb(29 28 26 / 0.15);
+    background: var(--bone);
+    color: var(--stone);
+    font-family: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+  }
+  .wrap {
+    width: min(100% - clamp(2.5rem, 6vw, 6rem), 82rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .statement {
+    color: var(--char);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  em {
+    font-style: italic;
+  }
+  .label,
+  .section-label,
+  dt,
+  .num {
+    font-family: 'Inter Tight Variable', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .kv :focus-visible {
+    outline-color: var(--char);
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: min(92vh, 60rem);
+    padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 3vw, 3rem) clamp(1.5rem, 4vw, 3rem);
+    color: #fff;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero > :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgb(20 19 17 / 0.6) 0%, rgb(20 19 17 / 0.1) 24%, rgb(20 19 17 / 0.12) 42%, rgb(20 19 17 / 0.8) 100%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero :global(.hero-img) {
+      animation: settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+  }
+  @keyframes settle {
+    from {
+      transform: scale(1.06);
+    }
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    color: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-decoration: none;
+  }
+  .logo span {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .top ul {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: 0;
+    list-style: none;
+  }
+  .top nav a {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .top nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+  }
+  .hero :focus-visible {
+    outline-color: #fff;
+  }
+  @media (max-width: 34rem) {
+    .top nav {
+      display: none;
+    }
+  }
+  .hero-text {
+    align-self: end;
+    max-width: 62rem;
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.25);
+  }
+  .hero h1 {
+    margin-top: 1rem;
+    color: #fff;
+    font-size: clamp(3.5rem, 1.5rem + 8vw, 9rem);
+    line-height: 0.92;
+  }
+  .scroll {
+    justify-self: end;
+    margin-top: 1.5rem;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .scroll span {
+    display: inline-block;
+    margin-left: 0.4rem;
+  }
+
+  /* Intro */
+  .intro {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(4rem, 9vw, 8rem);
+  }
+  @media (min-width: 60rem) {
+    .intro {
+      grid-template-columns: 2fr 1fr;
+      align-items: end;
+    }
+  }
+  .statement {
+    max-width: 22ch;
+    font-size: clamp(2.1rem, 1.4rem + 2.8vw, 3.75rem);
+    line-height: 1.08;
+  }
+  .stats {
+    display: flex;
+    gap: 2.5rem;
+  }
+  dd {
+    margin-top: 0.35rem;
+    color: var(--char);
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.6rem;
+    line-height: 1;
+  }
+
+  /* Work grid */
+  .work {
+    padding-bottom: clamp(4rem, 9vw, 8rem);
+  }
+  .section-label {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--stone);
+  }
+  .grid {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem);
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 60rem) {
+    .grid {
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .p1 {
+      grid-column: 1 / span 7;
+    }
+    .p2 {
+      grid-column: 9 / span 4;
+      margin-top: 7rem;
+    }
+    .p3 {
+      grid-column: 2 / span 4;
+    }
+    .p4 {
+      grid-column: 7 / span 6;
+      margin-top: 9rem;
+    }
+  }
+  .frame {
+    overflow: hidden;
+    background: #e3e0d8;
+  }
+  .frame :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .p2 .frame :global(img) {
+    aspect-ratio: 3 / 4;
+  }
+  .p3 .frame :global(img) {
+    aspect-ratio: 1;
+  }
+  figure:hover .frame :global(img) {
+    transform: scale(1.04);
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    margin-top: 1rem;
+  }
+  .name {
+    color: var(--char);
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  .place {
+    margin-left: auto;
+    font-size: 0.9rem;
+  }
+
+  /* Studio */
+  .studio {
+    padding-block: clamp(4rem, 9vw, 8rem);
+    background: var(--char);
+    color: #b6b0a5;
+  }
+  .studio h2,
+  .studio h3 {
+    color: var(--paper);
+  }
+  .studio h2 {
+    font-size: clamp(2.6rem, 1.6rem + 4vw, 5rem);
+  }
+  .studio-inner {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 60rem) {
+    .studio-inner {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  .studio ol {
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+  }
+  .studio li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.4rem 1.5rem;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.18);
+  }
+  @media (min-width: 46rem) {
+    .studio li {
+      grid-template-columns: 3rem 1fr 1.3fr;
+      align-items: baseline;
+    }
+  }
+  .studio .num {
+    color: #8b857a;
+  }
+  .studio h3 {
+    font-size: 2rem;
+  }
+  .studio li p {
+    grid-column: 2 / -1;
+  }
+  @media (min-width: 46rem) {
+    .studio li p {
+      grid-column: auto;
+    }
+  }
+
+  /* Contact */
+  .contact {
+    display: grid;
+    gap: 3rem;
+    padding-block: clamp(4rem, 9vw, 8rem);
+  }
+  @media (min-width: 60rem) {
+    .contact {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .contact h2 {
+    font-size: clamp(2.8rem, 1.6rem + 4.5vw, 5.5rem);
+    line-height: 0.95;
+  }
+  .contact > div p {
+    max-width: 28rem;
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+  }
+  .form {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .form label {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .form label span {
+    color: var(--char);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .form input,
+  .form textarea {
+    width: 100%;
+    padding: 0.6rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--char);
+    border-radius: 0;
+    background: transparent;
+    color: var(--char);
+    font: inherit;
+    font-size: 1.1rem;
+  }
+  .form input:focus,
+  .form textarea:focus {
+    outline: none;
+    border-bottom-width: 2px;
+  }
+  .form ::placeholder {
+    color: #8f8a80;
+  }
+  .form button {
+    justify-self: start;
+    min-height: 3.25rem;
+    padding: 0.8rem 1.75rem;
+    border: 1px solid var(--char);
+    border-radius: 0;
+    background: var(--char);
+    color: var(--paper);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .form button:hover {
+    background: transparent;
+    color: var(--char);
+  }
+  .note {
+    font-size: 0.85rem;
+  }
+  .result:empty {
+    display: none;
+  }
+  .result {
+    padding: 1rem;
+    border: 1px solid var(--char);
+    color: var(--char);
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2.5rem 3rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.9rem;
+  }
+  .foot .logo {
+    color: var(--char);
+  }
+  .foot a {
+    color: var(--char);
+    font-weight: 600;
+  }
+</style>

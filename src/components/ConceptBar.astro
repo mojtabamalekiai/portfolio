@@ -1,0 +1,122 @@
+---
+import { getLang, localePath } from '../i18n';
+import LangSwitch from './LangSwitch.astro';
+
+interface Props {
+  business: string;
+}
+const { business } = Astro.props;
+const lang = getLang(Astro.url);
+const t =
+  lang === 'hu'
+    ? {
+        label: 'Erről az oldalról',
+        concept: 'Koncepció',
+        text: `A ${business} kitalált vállalkozás. A weboldalt Mojtaba Maleki tervezte és készítette.`,
+        nav: 'Koncepció navigáció',
+        back: 'Vissza a munkákhoz',
+        cta: 'Ilyet szeretnék',
+      }
+    : {
+        label: 'About this page',
+        concept: 'Design concept',
+        text: `${business} is a fictional business. Website designed & built by Mojtaba Maleki.`,
+        nav: 'Concept navigation',
+        back: 'Back to all work',
+        cta: 'Get a site like this',
+      };
+---
+
+<aside class="concept-bar" aria-label={t.label}>
+  <p>
+    <strong>{t.concept}</strong>
+    <span class="sep" aria-hidden="true">·</span>
+    <span>{t.text}</span>
+  </p>
+  <nav class="actions" aria-label={t.nav}>
+    <a href={localePath(lang, '/#work')}>
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.6"></path></svg>
+      {t.back}
+    </a>
+    <LangSwitch tone="dark" />
+    <a href={localePath(lang, '/#contact')} class="cta">{t.cta}</a>
+  </nav>
+</aside>
+
+<style>
+  .concept-bar {
+    position: relative;
+    z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding: 0.55rem clamp(1rem, 3vw, 2rem);
+    background: #15161a;
+    color: #e9e5dc;
+    font: 500 0.8125rem/1.4 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .concept-bar strong {
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+  }
+  .sep {
+    margin-inline: 0.4em;
+    opacity: 0.5;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+  }
+  .actions > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 2rem;
+    text-decoration: none;
+    color: #e9e5dc;
+  }
+  .actions > a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .actions svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .actions .cta {
+    padding: 0.2rem 0.8rem;
+    border-radius: 999px;
+    background: #2443db;
+    color: #fff;
+    font-weight: 600;
+  }
+  .actions .cta:hover {
+    background: #1a32ad;
+    text-decoration: none;
+  }
+  .concept-bar :focus-visible {
+    outline: 2px solid #8fa2ff;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (max-width: 40rem) {
+    .concept-bar p > span:last-child {
+      display: block;
+      color: #bdb9b0;
+    }
+    .sep {
+      display: none;
+    }
+  }
+  :global(.shot) .concept-bar {
+    display: none;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '@fontsource-variable/hanken-grotesk/wght.css';
+import '../styles/global.css';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found · Az oldal nem található — Mojtaba Maleki" noindex>
+  <main class="nf container">
+    <p class="eyebrow">404</p>
+    <h1>This page doesn’t <em>exist.</em></h1>
+    <p lang="hu" class="hu">Ez az oldal nem létezik.</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Homepage <Icon name="arrow-r" /></a>
+      <a class="btn btn--ghost" href="/hu/" lang="hu">Kezdőlap <Icon name="arrow-r" /></a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: var(--space-m);
+    min-height: 100svh;
+  }
+  h1 {
+    font-size: var(--text-display);
+    max-width: 12ch;
+  }
+  h1 em {
+    color: var(--accent);
+  }
+  .hu {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--muted);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+</style>

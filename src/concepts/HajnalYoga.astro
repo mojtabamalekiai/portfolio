@@ -1,0 +1,928 @@
+---
+import '@fontsource-variable/cormorant';
+import '@fontsource-variable/cormorant/wght-italic';
+import '@fontsource-variable/manrope';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import { getLang, localePath } from '../i18n';
+import meditate from '../assets/photos/hajnal-meditate.jpg';
+import seated from '../assets/photos/hajnal-seated.jpg';
+import stretch from '../assets/photos/hajnal-stretch.jpg';
+
+const lang = getLang(Astro.url);
+
+type Slot = [string, string, string, number];
+const copy = {
+  en: {
+    title: 'Hajnal Yoga Studio (design concept by Mojtaba Maleki)',
+    description: 'A design concept for a fictional neighbourhood yoga studio, designed and built by Mojtaba Maleki.',
+    nav: ['Classes', 'Timetable', 'Passes'],
+    book: 'Book a class',
+    kicker: 'Yoga studio · Small classes · All levels',
+    h1: ['Breathe in.', 'Slow down.'],
+    lede: 'Small yoga classes in a quiet, plant-filled studio. No mirrors, no pressure, just an hour that’s yours.',
+    ctaTimetable: 'See the timetable',
+    ctaNew: 'New to yoga?',
+    heroAlt: 'A woman meditating on a mat in a bright room with plants and an aroma diffuser',
+    next: ['Next class', 'Gentle flow · 18:00'],
+    classesTitle: 'Find your practice',
+    classes: [
+      { name: 'Vinyasa flow', text: 'Breath-led movement that builds warmth and strength.', meta: '60 min · Energising', level: 2 },
+      { name: 'Yin & restore', text: 'Long, supported holds to release tension and calm the mind.', meta: '75 min · Slow', level: 1 },
+      { name: 'Foundations', text: 'The basics, taught slowly. Perfect for your very first class.', meta: '60 min · Beginners', level: 1 },
+    ],
+    levelLabel: 'Intensity',
+    seatedAlt: 'A woman sitting cross-legged on a yoga mat on a wooden floor',
+    timetableTitle: 'This week',
+    timetableNote: 'Max. 12 people per class. Mats, blocks and blankets provided.',
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    daysLong: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    spots: 'spots left',
+    full: 'Full',
+    bookSlot: 'Book',
+    bookedPreview: 'Preview only. This concept doesn’t book anything.',
+    passesTitle: 'Simple passes',
+    passes: [
+      { name: 'Drop-in', price: '3 900 Ft', note: 'One class, any time.' },
+      { name: '10 classes', price: '32 000 Ft', note: 'Valid for 4 months.', featured: true },
+      { name: 'Monthly', price: '26 000 Ft', note: 'Unlimited classes for 30 days.' },
+    ],
+    featured: 'Best value',
+    teachersTitle: 'Your teachers',
+    teachers: [['RK', 'Réka', 'Vinyasa & breathwork'], ['DS', 'Dani', 'Yin & restorative'], ['SM', 'Sophie', 'Foundations & prenatal']],
+    stretchAlt: 'A woman stretching forward on a yoga mat, holding her feet',
+    visitTitle: 'Come as you are',
+    address: ['Kert utca 9, 2nd floor', 'Ring the bell marked “Hajnal”'],
+    visitNote: 'Arrive 10 minutes early. Showers and lockers on site.',
+    footer: ['Hajnal is a fictional business. This website is a design concept by', 'Photography via Unsplash.'],
+    week: [
+      [['07:00', 'Morning flow', 'Réka', 9], ['18:00', 'Foundations', 'Sophie', 4], ['19:30', 'Yin & restore', 'Dani', 0]],
+      [['12:15', 'Lunch flow', 'Réka', 6], ['18:00', 'Gentle flow', 'Sophie', 7], ['19:30', 'Vinyasa flow', 'Réka', 2]],
+      [['07:00', 'Morning flow', 'Réka', 10], ['18:30', 'Yin & restore', 'Dani', 5]],
+      [['12:15', 'Lunch flow', 'Sophie', 8], ['18:00', 'Foundations', 'Sophie', 3], ['19:30', 'Vinyasa flow', 'Réka', 6]],
+      [['07:00', 'Morning flow', 'Réka', 11], ['17:30', 'Yin & restore', 'Dani', 1]],
+      [['09:00', 'Vinyasa flow', 'Réka', 0], ['10:45', 'Foundations', 'Sophie', 5], ['17:00', 'Candle-lit yin', 'Dani', 4]],
+      [['10:00', 'Slow Sunday', 'Dani', 7], ['18:00', 'Restore & breathe', 'Dani', 9]],
+    ] as Slot[][],
+  },
+  hu: {
+    title: 'Hajnal jógastúdió (Mojtaba Maleki koncepciója)',
+    description: 'Egy kitalált környékbeli jógastúdió weboldal-koncepciója. Tervezte és készítette: Mojtaba Maleki.',
+    nav: ['Órák', 'Órarend', 'Bérletek'],
+    book: 'Foglalás',
+    kicker: 'Jógastúdió · Kis csoportok · Minden szinten',
+    h1: ['Lélegezz be.', 'Lassíts.'],
+    lede: 'Kis csoportos jógaórák egy csendes, növényekkel teli stúdióban. Se tükör, se nyomás, csak egy óra, ami a tiéd.',
+    ctaTimetable: 'Órarend',
+    ctaNew: 'Most kezdenéd?',
+    heroAlt: 'Egy nő meditál egy matracon, világos, növényekkel teli szobában, mellette aromapárologtató',
+    next: ['Következő óra', 'Gyengéd flow · 18:00'],
+    classesTitle: 'Találd meg a gyakorlásod',
+    classes: [
+      { name: 'Vinyasa flow', text: 'Légzésre épülő mozgás, ami átmelegít és erősít.', meta: '60 perc · Energizáló', level: 2 },
+      { name: 'Yin és relax', text: 'Hosszú, alátámasztott tartások a feszültség oldására.', meta: '75 perc · Lassú', level: 1 },
+      { name: 'Alapok', text: 'Az alapok, lassan. Tökéletes a legelső órádhoz.', meta: '60 perc · Kezdőknek', level: 1 },
+    ],
+    levelLabel: 'Intenzitás',
+    seatedAlt: 'Egy nő törökülésben ül egy jógamatracon, fapadlón',
+    timetableTitle: 'Ezen a héten',
+    timetableNote: 'Óránként max. 12 fő. Matracot, téglát és takarót biztosítunk.',
+    days: ['H', 'K', 'Sze', 'Cs', 'P', 'Szo', 'V'],
+    daysLong: ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'],
+    spots: 'szabad hely',
+    full: 'Betelt',
+    bookSlot: 'Foglalok',
+    bookedPreview: 'Csak előnézet. Ez a koncepció semmit nem foglal le.',
+    passesTitle: 'Egyszerű bérletek',
+    passes: [
+      { name: 'Alkalmi jegy', price: '3 900 Ft', note: 'Egy óra, bármikor.' },
+      { name: '10 alkalmas', price: '32 000 Ft', note: '4 hónapig érvényes.', featured: true },
+      { name: 'Havi', price: '26 000 Ft', note: 'Korlátlan órák 30 napig.' },
+    ],
+    featured: 'Legjobb ár',
+    teachersTitle: 'Oktatóink',
+    teachers: [['RK', 'Réka', 'Vinyasa és légzés'], ['DS', 'Dani', 'Yin és relaxáció'], ['SM', 'Sophie', 'Alapok és kismama jóga']],
+    stretchAlt: 'Egy nő előrehajol a jógamatracon, és a lábfejét fogja',
+    visitTitle: 'Gyere úgy, ahogy vagy',
+    address: ['Kert utca 9., 2. emelet', 'Csengess a „Hajnal” feliratnál'],
+    visitNote: 'Érkezz 10 perccel előbb. Zuhany és öltözőszekrény a helyszínen.',
+    footer: ['A Hajnal kitalált vállalkozás. Ez a weboldal egy koncepció, készítette:', 'Fotók: Unsplash.'],
+    week: [
+      [['07:00', 'Reggeli flow', 'Réka', 9], ['18:00', 'Alapok', 'Sophie', 4], ['19:30', 'Yin és relax', 'Dani', 0]],
+      [['12:15', 'Ebédidős flow', 'Réka', 6], ['18:00', 'Gyengéd flow', 'Sophie', 7], ['19:30', 'Vinyasa flow', 'Réka', 2]],
+      [['07:00', 'Reggeli flow', 'Réka', 10], ['18:30', 'Yin és relax', 'Dani', 5]],
+      [['12:15', 'Ebédidős flow', 'Sophie', 8], ['18:00', 'Alapok', 'Sophie', 3], ['19:30', 'Vinyasa flow', 'Réka', 6]],
+      [['07:00', 'Reggeli flow', 'Réka', 11], ['17:30', 'Yin és relax', 'Dani', 1]],
+      [['09:00', 'Vinyasa flow', 'Réka', 0], ['10:45', 'Alapok', 'Sophie', 5], ['17:00', 'Gyertyafényes yin', 'Dani', 4]],
+      [['10:00', 'Lassú vasárnap', 'Dani', 7], ['18:00', 'Relax és légzés', 'Dani', 9]],
+    ] as Slot[][],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#f1eadf">
+  <ConceptBar business="Hajnal" />
+
+  <div class="hj">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Hajnal"><span class="sun" aria-hidden="true"></span>hajnal</a>
+        <nav aria-label="Hajnal">
+          <ul>
+            <li><a href="#classes">{copy.nav[0]}</a></li>
+            <li><a href="#timetable">{copy.nav[1]}</a></li>
+            <li><a href="#passes">{copy.nav[2]}</a></li>
+          </ul>
+        </nav>
+        <a href="#timetable" class="btn btn-small">{copy.book}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <p class="kicker">{copy.kicker}</p>
+          <h1>{copy.h1[0]}<br /><em>{copy.h1[1]}</em></h1>
+          <p class="lede">{copy.lede}</p>
+          <div class="actions">
+            <a href="#timetable" class="btn">{copy.ctaTimetable}</a>
+            <a href="#classes" class="link">{copy.ctaNew} <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <span class="halo" aria-hidden="true"></span>
+          <Picture src={meditate} formats={['avif', 'webp']} quality={68} widths={[480, 720, 960, 1280]} sizes="(min-width: 60rem) 44vw, 92vw" alt={copy.heroAlt} loading="eager" fetchpriority="high" />
+          <p class="next" aria-hidden="true"><span>{copy.next[0]}</span>{copy.next[1]}</p>
+        </div>
+      </section>
+
+      <section id="classes" class="classes">
+        <div class="wrap">
+          <h2>{copy.classesTitle}</h2>
+          <div class="class-grid">
+            <ul class="class-list">
+              {
+                copy.classes.map((c) => (
+                  <li>
+                    <div class="class-head">
+                      <h3>{c.name}</h3>
+                      <span class="intensity" aria-label={`${copy.levelLabel}: ${c.level}/3`}>
+                        {[1, 2, 3].map((n) => <i class:list={{ on: n <= c.level }} />)}
+                      </span>
+                    </div>
+                    <p>{c.text}</p>
+                    <p class="meta">{c.meta}</p>
+                  </li>
+                ))
+              }
+            </ul>
+            <Picture src={seated} formats={['avif', 'webp']} quality={68} widths={[480, 720, 960]} sizes="(min-width: 60rem) 36vw, 92vw" alt={copy.seatedAlt} class="class-img" />
+          </div>
+        </div>
+      </section>
+
+      <section id="timetable" class="timetable wrap" aria-labelledby="tt-title">
+        <div class="tt-head">
+          <h2 id="tt-title">{copy.timetableTitle}</h2>
+          <p>{copy.timetableNote}</p>
+        </div>
+        <div class="tabs" role="tablist" aria-labelledby="tt-title" data-tabs>
+          {
+            copy.days.map((d, i) => (
+              <button
+                role="tab"
+                type="button"
+                id={`tab-${i}`}
+                aria-controls={`day-${i}`}
+                aria-selected={i === 1 ? 'true' : 'false'}
+                tabindex={i === 1 ? 0 : -1}
+              >
+                <span aria-hidden="true">{d}</span>
+                <span class="visually-hidden">{copy.daysLong[i]}</span>
+              </button>
+            ))
+          }
+        </div>
+        {
+          copy.week.map((slots, i) => (
+            <div class="day" role="tabpanel" id={`day-${i}`} aria-labelledby={`tab-${i}`} data-day={i} data-active={i === 1 ? '' : undefined}>
+              <h3 class="day-name">{copy.daysLong[i]}</h3>
+              <ul>
+                {slots.map(([time, name, teacher, spots]) => (
+                  <li>
+                    <span class="time">{time}</span>
+                    <span class="what">
+                      <strong>{name}</strong>
+                      <span>{teacher}</span>
+                    </span>
+                    <span class:list={['spots', { full: spots === 0 }]}>{spots === 0 ? copy.full : `${spots} ${copy.spots}`}</span>
+                    <button type="button" class="slot-btn" disabled={spots === 0} data-book>
+                      {copy.bookSlot}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+        <p class="tt-toast" role="status" aria-live="polite" data-toast={copy.bookedPreview}></p>
+      </section>
+
+      <section id="passes" class="passes">
+        <div class="wrap">
+          <h2>{copy.passesTitle}</h2>
+          <ul class="pass-list">
+            {
+              copy.passes.map((p) => (
+                <li class:list={{ featured: 'featured' in p && p.featured }}>
+                  {'featured' in p && p.featured && <span class="badge">{copy.featured}</span>}
+                  <h3>{p.name}</h3>
+                  <p class="price">{p.price}</p>
+                  <p>{p.note}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="teachers wrap" aria-labelledby="teachers-title">
+        <div>
+          <h2 id="teachers-title">{copy.teachersTitle}</h2>
+          <ul>
+            {
+              copy.teachers.map(([ini, name, role]) => (
+                <li>
+                  <span class="ini" aria-hidden="true">{ini}</span>
+                  <span>
+                    <strong>{name}</strong>
+                    {role}
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <Picture src={stretch} formats={['avif', 'webp']} quality={68} widths={[480, 720, 960, 1280]} sizes="(min-width: 60rem) 50vw, 92vw" alt={copy.stretchAlt} class="teach-img" />
+      </section>
+
+      <section class="visit">
+        <div class="wrap visit-inner">
+          <h2>{copy.visitTitle}</h2>
+          <div>
+            <address>{copy.address[0]}<br />{copy.address[1]}</address>
+            <p>{copy.visitNote}</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo"><span class="sun" aria-hidden="true"></span>hajnal</p>
+      <p>
+        {copy.footer[0]}{' '}
+        <a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}
+      </p>
+    </footer>
+  </div>
+</Base>
+
+<script>
+  const tablist = document.querySelector<HTMLElement>('[data-tabs]');
+  if (tablist) {
+    const tabs = [...tablist.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const panels = [...document.querySelectorAll<HTMLElement>('[data-day]')];
+    document.documentElement.classList.add('tabs-ready');
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+      });
+      panels.forEach((p, j) => p.toggleAttribute('data-active', i === j));
+      if (focus) tabs[i].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length;
+        if (e.key === 'ArrowRight') select((i + 1) % n, true);
+        else if (e.key === 'ArrowLeft') select((i - 1 + n) % n, true);
+        else if (e.key === 'Home') select(0, true);
+        else if (e.key === 'End') select(n - 1, true);
+        else return;
+        e.preventDefault();
+      });
+    });
+  }
+  const toast = document.querySelector<HTMLElement>('.tt-toast');
+  let timer = 0;
+  document.querySelectorAll('[data-book]').forEach((b) =>
+    b.addEventListener('click', () => {
+      if (!toast) return;
+      toast.textContent = toast.dataset.toast ?? '';
+      toast.classList.add('on');
+      clearTimeout(timer);
+      timer = window.setTimeout(() => toast.classList.remove('on'), 3500);
+    }),
+  );
+</script>
+
+<style>
+  .hj {
+    --sand: #f1eadf;
+    --linen: #faf6ef;
+    --clay: #b4704f;
+    --clay-ink: #8e5236;
+    --olive: #5e6b4e;
+    --bark: #2f2a24;
+    --text: #5a5248;
+    --rule: rgb(47 42 36 / 0.14);
+    background: var(--sand);
+    color: var(--text);
+    font-family: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem;
+  }
+  .wrap {
+    width: min(100% - clamp(2.5rem, 6vw, 5rem), 74rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .logo {
+    color: var(--bark);
+    font-family: 'Cormorant Variable', Georgia, serif;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: clamp(2.6rem, 1.8rem + 3vw, 4.25rem);
+  }
+  em {
+    color: var(--clay-ink);
+    font-style: italic;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.1rem;
+    padding: 0.75rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--bark);
+    color: var(--linen);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .btn:hover {
+    background: var(--clay-ink);
+    transform: translateY(-1px);
+  }
+  .btn-small {
+    min-height: 2.6rem;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.92rem;
+  }
+  .link {
+    color: var(--bark);
+    font-weight: 600;
+    text-underline-offset: 0.3em;
+  }
+  .hj :focus-visible {
+    outline-color: var(--clay-ink);
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(241 234 223 / 0.94);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 2rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sun {
+    width: 1.35rem;
+    height: 0.7rem;
+    border-radius: 1.35rem 1.35rem 0 0;
+    background: var(--clay);
+    box-shadow: 0 3px 0 -1px var(--bark);
+  }
+  .top ul {
+    display: flex;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding: 0;
+    list-style: none;
+  }
+  .top nav a {
+    color: var(--bark);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .top nav a:hover {
+    color: var(--clay-ink);
+  }
+  @media (max-width: 42rem) {
+    .top nav {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 6vw, 5.5rem) clamp(3.5rem, 7vw, 6rem);
+  }
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .kicker {
+    color: var(--olive);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    margin-top: 1.25rem;
+    font-size: clamp(3.6rem, 2rem + 7vw, 7.5rem);
+    font-weight: 400;
+    line-height: 0.92;
+  }
+  .lede {
+    max-width: 30rem;
+    margin-top: 1.75rem;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2.25rem;
+  }
+  .hero-media {
+    position: relative;
+    padding: 0 0 1.5rem 1.5rem;
+  }
+  .halo {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 62%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--clay);
+    opacity: 0.9;
+  }
+  .hero-media :global(img) {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 4.6;
+    object-fit: cover;
+    object-position: 60% 50%;
+    border-radius: 14rem 14rem 1.25rem 1.25rem;
+  }
+  .next {
+    position: absolute;
+    right: -0.5rem;
+    top: 18%;
+    display: grid;
+    padding: 0.85rem 1.1rem;
+    border-radius: 1rem;
+    background: var(--linen);
+    color: var(--bark);
+    font-weight: 600;
+    box-shadow: 0 20px 40px -20px rgb(47 42 36 / 0.45);
+  }
+  .next span {
+    color: var(--olive);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .next span::before {
+    content: '';
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.4rem;
+    border-radius: 50%;
+    background: #6d9b5a;
+  }
+
+  /* Classes */
+  .classes {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: var(--linen);
+  }
+  .class-grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 60rem) {
+    .class-grid {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+  .class-list {
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+  .class-list li {
+    padding-block: 1.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .class-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .class-list h3 {
+    font-size: clamp(1.9rem, 1.5rem + 1vw, 2.4rem);
+  }
+  .class-list p {
+    margin-top: 0.4rem;
+    max-width: 32rem;
+  }
+  .meta {
+    color: var(--olive);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .intensity {
+    display: inline-flex;
+    gap: 0.3rem;
+  }
+  .intensity i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--clay);
+  }
+  .intensity i.on {
+    background: var(--clay);
+  }
+  .class-grid :global(.class-img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 1.25rem;
+  }
+
+  /* Timetable */
+  .timetable {
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+  .tt-head {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 50rem) {
+    .tt-head {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+  .tabs {
+    position: relative;
+    display: none;
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+  }
+  :global(.tabs-ready) .tabs {
+    display: flex;
+  }
+  .tabs button {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 2.9rem;
+    padding: 0.5rem 0.25rem;
+    font-size: clamp(0.82rem, 0.75rem + 0.3vw, 1rem);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--bark);
+    font-weight: 600;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .tabs button:hover {
+    border-color: var(--bark);
+  }
+  .tabs button[aria-selected='true'] {
+    background: var(--bark);
+    border-color: var(--bark);
+    color: var(--linen);
+  }
+  .day {
+    margin-bottom: 1.5rem;
+  }
+  :global(.tabs-ready) .day:not([data-active]) {
+    display: none;
+  }
+  :global(.tabs-ready) .day-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .day-name {
+    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+  }
+  .day ul {
+    padding: 0;
+    list-style: none;
+    border-radius: 1.25rem;
+    background: var(--linen);
+    overflow: hidden;
+  }
+  .day li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr auto;
+    gap: 0.25rem 1rem;
+    align-items: center;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .day li:last-child {
+    border-bottom: 0;
+  }
+  @media (max-width: 24rem) {
+    .day li {
+      grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+      gap: 0.2rem 0.6rem;
+      padding-inline: 0.9rem;
+    }
+    .time {
+      font-size: 1.35rem;
+    }
+    .slot-btn {
+      padding-inline: 0.7rem;
+    }
+  }
+  @media (min-width: 40rem) {
+    .day li {
+      grid-template-columns: 5.5rem 1fr auto auto;
+      padding-inline: 1.75rem;
+    }
+  }
+  .time {
+    color: var(--bark);
+    font-family: 'Cormorant Variable', serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .what {
+    display: grid;
+  }
+  .what strong {
+    color: var(--bark);
+    font-weight: 700;
+  }
+  .what span {
+    font-size: 0.9rem;
+  }
+  .spots {
+    color: var(--olive);
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .spots.full {
+    color: var(--clay-ink);
+  }
+  @media (max-width: 39.99rem) {
+    .spots {
+      grid-column: 2;
+    }
+    .slot-btn {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+  }
+  .slot-btn {
+    min-height: 2.5rem;
+    padding: 0.4rem 1rem;
+    border: 1.5px solid var(--bark);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--bark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .slot-btn:hover:not(:disabled) {
+    background: var(--bark);
+    color: var(--linen);
+  }
+  .slot-btn:disabled {
+    border-color: var(--rule);
+    color: #a59c90;
+    cursor: not-allowed;
+  }
+  .tt-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    z-index: 70;
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+    background: var(--bark);
+    color: var(--linen);
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translate(-50%, 10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .tt-toast:empty {
+    visibility: hidden;
+  }
+  .tt-toast.on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  /* Passes */
+  .passes {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: var(--olive);
+    color: #e7e8dc;
+  }
+  .passes h2,
+  .passes h3 {
+    color: #fbf8f1;
+  }
+  .pass-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 50rem) {
+    .pass-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .pass-list li {
+    position: relative;
+    padding: 2rem;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 1.25rem;
+  }
+  .pass-list li.featured {
+    background: var(--linen);
+    color: var(--text);
+  }
+  .pass-list li.featured h3 {
+    color: var(--bark);
+  }
+  .pass-list h3 {
+    font-size: 2rem;
+  }
+  .price {
+    margin-block: 1rem 0.5rem;
+    color: inherit;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .featured .price {
+    color: var(--bark);
+  }
+  .badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: var(--clay);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* Teachers */
+  .teachers {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+  @media (min-width: 60rem) {
+    .teachers {
+      grid-template-columns: 1fr 1.2fr;
+    }
+  }
+  .teachers ul {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .teachers li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .teachers li strong {
+    display: block;
+    color: var(--bark);
+    font-family: 'Cormorant Variable', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .ini {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--linen);
+    color: var(--clay-ink);
+    font-weight: 700;
+  }
+  .teachers :global(.teach-img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 1.25rem;
+  }
+
+  /* Visit */
+  .visit {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--bark);
+    color: #d9d1c4;
+  }
+  .visit h2 {
+    color: var(--linen);
+  }
+  .visit-inner {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 50rem) {
+    .visit-inner {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+    }
+  }
+  address {
+    margin-bottom: 0.75rem;
+    color: var(--linen);
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2.5rem 3rem;
+    font-size: 0.9rem;
+  }
+  .foot .logo {
+    font-size: 1.6rem;
+  }
+  .foot a {
+    color: var(--bark);
+    font-weight: 600;
+  }
+</style>
