@@ -8,7 +8,7 @@ Built with [Astro](https://astro.build) and TypeScript. The output is fully stat
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321
+npm run dev       # http://localhost:4321/portfolio/
 npm run build     # type-checks, then builds static files into dist/
 npm run preview   # serves the built dist/ folder locally
 ```
@@ -17,9 +17,13 @@ Requires Node 20 or newer.
 
 ## Deploy
 
-`dist/` is a static site. It works on Netlify, Vercel, Cloudflare Pages, GitHub Pages or any static host. Build command `npm run build`, output directory `dist`.
+Live at **https://mojtabamalekiai.github.io/portfolio/** via GitHub Pages.
 
-When you have a domain, set `SITE_URL` in `astro.config.mjs`. Astro then emits a canonical URL and an absolute Open Graph image URL, which some link-preview scrapers need.
+Every push to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it. Progress is under the repo's **Actions** tab, and a new version is live a minute or two after the run finishes.
+
+The site is served from `/portfolio/`, so `astro.config.mjs` sets `base: '/portfolio'`. All internal links go through `localePath()` / `withBase()` in `src/i18n/index.ts`, which add it automatically. Locally, `npm run dev` serves at http://localhost:4321/portfolio/.
+
+**Custom domain later:** add the domain under the repo's **Settings → Pages**, then in `astro.config.mjs` set `SITE_URL` to `https://yourdomain.com` and `BASE_PATH` to `'/'`.
 
 ## Languages
 

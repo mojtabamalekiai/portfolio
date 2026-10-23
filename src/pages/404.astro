@@ -5,6 +5,7 @@ import '@fontsource-variable/hanken-grotesk/wght.css';
 import '../styles/global.css';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import { localePath } from '../i18n';
 ---
 
 <Base title="Page not found · Az oldal nem található — Mojtaba Maleki" noindex>
@@ -13,8 +14,8 @@ import Icon from '../components/Icon.astro';
     <h1>This page doesn’t <em>exist.</em></h1>
     <p lang="hu" class="hu">Ez az oldal nem létezik.</p>
     <div class="actions">
-      <a class="btn btn--primary" href="/">Homepage <Icon name="arrow-r" /></a>
-      <a class="btn btn--ghost" href="/hu/" lang="hu">Kezdőlap <Icon name="arrow-r" /></a>
+      <a class="btn btn--primary" href={localePath('en', '/')}>Homepage <Icon name="arrow-r" /></a>
+      <a class="btn btn--ghost" href={localePath('hu', '/')} lang="hu">Kezdőlap <Icon name="arrow-r" /></a>
     </div>
   </main>
 </Base>

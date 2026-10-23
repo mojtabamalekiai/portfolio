@@ -2,7 +2,7 @@
 // Shared document shell. Each page imports its own fonts and stylesheets,
 // so the concept demos never load the main site's fonts (and vice versa).
 import { site } from '../data/site';
-import { getLang, stripLang, localePath } from '../i18n';
+import { getLang, stripLang, localePath, withBase, BASE } from '../i18n';
 import { ui } from '../i18n/ui';
 
 interface Props {
@@ -26,6 +26,7 @@ const {
 
 const basePath = stripLang(Astro.url.pathname);
 const abs = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const ogImageUrl = abs(withBase(ogImage));
 const canonical = Astro.site ? abs(Astro.url.pathname) : undefined;
 ---
 
@@ -34,21 +35,20 @@ const canonical = Astro.site ? abs(Astro.url.pathname) : undefined;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <script is:inline>
+    <script is:inline define:vars={{ base: BASE }}>
       // Language: an explicit choice (saved by the EN/HU switch) wins; otherwise a browser whose
       // main language is Hungarian is sent from the English page to its Hungarian twin.
-      (function () {
-        var saved = null;
-        try { saved = localStorage.getItem('lang'); } catch (e) {}
-        var path = location.pathname;
-        var onHu = path === '/hu' || path.indexOf('/hu/') === 0;
-        var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-        var want = saved || (browser.indexOf('hu') === 0 ? 'hu' : null);
-        var rest = location.search + location.hash;
-        if (want === 'hu' && !onHu) location.replace('/hu' + path + rest);
-        else if (saved === 'en' && onHu) location.replace((path.replace(/^\/hu/, '') || '/') + rest);
-        document.documentElement.classList.add('js');
-      })();
+      var saved = null;
+      try { saved = localStorage.getItem('lang'); } catch (e) {}
+      var full = location.pathname;
+      var path = base && full.indexOf(base) === 0 ? full.slice(base.length) || '/' : full;
+      var onHu = path === '/hu' || path.indexOf('/hu/') === 0;
+      var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+      var want = saved || (browser.indexOf('hu') === 0 ? 'hu' : null);
+      var rest = location.search + location.hash;
+      if (want === 'hu' && !onHu) location.replace(base + '/hu' + path + rest);
+      else if (saved === 'en' && onHu) location.replace(base + (path.replace(/^\/hu/, '') || '/') + rest);
+      document.documentElement.classList.add('js');
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -65,7 +65,7 @@ const canonical = Astro.site ? abs(Astro.url.pathname) : undefined;
       )
     }
     <meta name="theme-color" content={themeColor} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -73,7 +73,7 @@ const canonical = Astro.site ? abs(Astro.url.pathname) : undefined;
     <meta property="og:locale:alternate" content={lang === 'hu' ? 'en_GB' : 'hu_HU'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={abs(ogImage)} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={t.meta.ogAlt} />
