@@ -4,6 +4,7 @@ import '../styles/concept-base.css';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
 import { getLang, localePath } from '../i18n';
 import desk from '../assets/photos/ledger-desk.jpg';
 
@@ -289,6 +290,7 @@ const custom = lang === 'hu' ? 'Egyedi' : 'Custom';
       </p>
     </footer>
   </div>
+  <ActionBar bg="#fafaf7" fg="#0e1b16" primaryBg="#1f4d3a" primaryFg="#ffffff" actions={[{ icon: 'calendar', label: lang === 'hu' ? 'Hívást kérek' : 'Book a call', href: '#contact' }, { icon: 'mail', label: lang === 'hu' ? 'Üzenet' : 'Message', preview: 'message' }, { icon: 'check', label: lang === 'hu' ? 'Árak' : 'Prices', href: '#pricing' }]} />
 </Base>
 
 <script>
@@ -313,7 +315,7 @@ const custom = lang === 'hu' ? 'Egyedi' : 'Custom';
     background: var(--bg);
     color: var(--text);
     font-family: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
   .wrap {
     width: min(100% - clamp(2.5rem, 6vw, 5rem), 78rem);

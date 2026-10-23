@@ -1,0 +1,848 @@
+---
+import '@fontsource/archivo-black/400.css';
+import '@fontsource-variable/archivo';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
+import OpenHours from '../components/concept/OpenHours.astro';
+import Icon from '../components/Icon.astro';
+import { getLang, localePath } from '../i18n';
+import hero from '../assets/photos/kerek-hero.jpg';
+import tyre from '../assets/photos/kerek-tyre.jpg';
+import engine from '../assets/photos/kerek-engine.jpg';
+
+const lang = getLang(Astro.url);
+const hours: ([string, string] | null)[] = [
+  ['07:30', '17:00'],
+  ['07:30', '17:00'],
+  ['07:30', '17:00'],
+  ['07:30', '17:00'],
+  ['07:30', '17:00'],
+  ['08:00', '12:00'],
+  null,
+];
+
+// Simple line icons for each problem.
+const icons: Record<string, string> = {
+  brakes: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M4 7.5a10 10 0 0 0 0 9M20 7.5a10 10 0 0 1 0 9"/>',
+  oil: '<path d="M4 15h11l5-6-2-1-3 3H6l-2 4Z"/><path d="M18 16.5c0 1.2.8 2 1.5 2s1.5-.8 1.5-2c0-1-1.5-3-1.5-3s-1.5 2-1.5 3Z"/><path d="M7 11V8h4v3"/>',
+  tyres: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><path d="M12 3.5v4.5M12 16v4.5M3.5 12H8M16 12h4.5"/>',
+  light: '<path d="M8 18h8M9 21h6M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z"/><path d="M12 7v3.5M12 13v.2"/>',
+  ac: '<path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/><path d="m9.5 4.5 2.5 2 2.5-2M9.5 19.5l2.5-2 2.5 2"/>',
+  mot: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 11l2 2 4-4M8.5 17h7"/>',
+  unsure: '<circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5M12 17v.2"/>',
+};
+
+const copy = {
+  en: {
+    title: 'Kerék Car Service (sample website by Mojtaba Maleki)',
+    description: 'A sample website for a made-up car repair workshop with a simple “what’s wrong?” price guide, designed and built by Mojtaba Maleki.',
+    tagline: 'car service',
+    nav: ['Prices', 'How it works', 'Find us'],
+    call: 'Call the workshop',
+    h1: ['Fixed right.', 'Price agreed first.'],
+    lede: 'Honest repairs for every make of car. We call you with the price before we touch a thing.',
+    ctaWhat: 'What’s wrong with my car?',
+    heroAlt: 'A smiling mechanic looking up at a car on a lift in a workshop',
+    promises: ['Written quote first', 'Old parts given back', '12-month warranty'],
+    pickTitle: 'What’s wrong with your car?',
+    pickNote: 'Tap the problem. We show you what it usually costs.',
+    from: 'Usually from',
+    takes: 'Takes about',
+    problems: [
+      { id: 'brakes', label: 'Brakes', price: '18 000 Ft', time: '1.5 hours', note: 'Front pads changed and brakes tested. Discs extra if worn.' },
+      { id: 'oil', label: 'Oil change', price: '14 900 Ft', time: '45 minutes', note: 'Oil and filter included. You can wait with a coffee.' },
+      { id: 'tyres', label: 'Tyres', price: '12 000 Ft', time: '40 minutes', note: 'Change and balance all four wheels. Storage available.' },
+      { id: 'light', label: 'Warning light', price: '6 000 Ft', time: '30 minutes', note: 'Computer check. Free if we do the repair.' },
+      { id: 'ac', label: 'Air-con', price: '16 900 Ft', time: '1 hour', note: 'Clean, refill and leak test.' },
+      { id: 'mot', label: 'MOT check', price: '24 900 Ft', time: 'half a day', note: 'We get your car ready and take it to the test for you.' },
+      { id: 'unsure', label: 'Not sure', price: 'Free', time: '15 minutes', note: 'Bring it in. We’ll take a look and tell you honestly.' },
+    ],
+    book: 'Book this',
+    howTitle: 'How it works',
+    how: [
+      ['Drop off', 'Bring your car in the morning.'],
+      ['We call you', 'You hear the price before any work.'],
+      ['You decide', 'Say yes, or just take it home.'],
+      ['Pick up', 'Usually the same day.'],
+    ],
+    tyreTitle: 'Winter tyres? We keep them for you.',
+    tyreText: 'Clean, dry storage for one season: 12 000 Ft for four wheels.',
+    tyreAlt: 'A mechanic in gloves fitting a tyre in a workshop',
+    engineAlt: 'A mechanic working carefully on a car engine',
+    visitTitle: 'Find the workshop',
+    address: ['Ipari út 7.', 'Next to the petrol station · Free parking'],
+    directions: 'Directions',
+    actions: ['Call', 'Book', 'Map'],
+    footer: ['Kerék Car Service is a made-up business. This sample website was designed and built by', 'Photos: Unsplash.'],
+  },
+  hu: {
+    title: 'Kerék Autószerviz (Mojtaba Maleki mintaoldala)',
+    description: 'Mintaoldal egy kitalált autószerviznek egyszerű „mi a baj?” árkalauzzal. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'autószerviz',
+    nav: ['Árak', 'Hogyan működik', 'Elérhetőség'],
+    call: 'Hívd a szervizt',
+    h1: ['Rendesen megjavítjuk.', 'Az árat előre mondjuk.'],
+    lede: 'Becsületes javítás minden autómárkához. Mielőtt bármihez nyúlnánk, felhívunk az árral.',
+    ctaWhat: 'Mi baja az autómnak?',
+    heroAlt: 'Mosolygó szerelő felnéz egy emelőn álló autóra a műhelyben',
+    promises: ['Írásos árajánlat előre', 'A régi alkatrészt visszaadjuk', '12 hónap garancia'],
+    pickTitle: 'Mi a baj az autóval?',
+    pickNote: 'Koppints a problémára. Megmutatjuk, mennyibe szokott kerülni.',
+    from: 'Általában',
+    takes: 'Időtartam kb.',
+    problems: [
+      { id: 'brakes', label: 'Fék', price: '18 000 Ft-tól', time: '1,5 óra', note: 'Első fékbetét csere és fékpróba. A féktárcsa külön, ha kopott.' },
+      { id: 'oil', label: 'Olajcsere', price: '14 900 Ft-tól', time: '45 perc', note: 'Olaj és szűrő benne van. Megvárhatod egy kávé mellett.' },
+      { id: 'tyres', label: 'Gumi', price: '12 000 Ft-tól', time: '40 perc', note: 'Mind a négy kerék cseréje és centírozása. Tárolás is van.' },
+      { id: 'light', label: 'Hibajelző lámpa', price: '6 000 Ft-tól', time: '30 perc', note: 'Számítógépes hibakeresés. Ingyenes, ha nálunk javíttatod.' },
+      { id: 'ac', label: 'Klíma', price: '16 900 Ft-tól', time: '1 óra', note: 'Tisztítás, feltöltés és szivárgásvizsgálat.' },
+      { id: 'mot', label: 'Műszaki vizsga', price: '24 900 Ft-tól', time: 'fél nap', note: 'Felkészítjük az autót, és el is visszük a vizsgára.' },
+      { id: 'unsure', label: 'Nem tudom', price: 'Ingyenes', time: '15 perc', note: 'Hozd be, megnézzük, és őszintén megmondjuk.' },
+    ],
+    book: 'Ezt kérem',
+    howTitle: 'Hogyan működik',
+    how: [
+      ['Leadod', 'Reggel behozod az autót.'],
+      ['Felhívunk', 'A munka előtt megtudod az árat.'],
+      ['Te döntesz', 'Mondasz igent, vagy hazaviszed.'],
+      ['Elviszed', 'Általában még aznap.'],
+    ],
+    tyreTitle: 'Téli gumi? Megőrizzük neked.',
+    tyreText: 'Tiszta, száraz tárolás egy szezonra: 12 000 Ft négy kerékre.',
+    tyreAlt: 'Kesztyűs szerelő gumit szerel a műhelyben',
+    engineAlt: 'Szerelő gondosan dolgozik egy autó motorján',
+    visitTitle: 'Itt találod a műhelyt',
+    address: ['Ipari út 7.', 'A benzinkút mellett · Ingyenes parkolás'],
+    directions: 'Útvonal',
+    actions: ['Hívás', 'Foglalás', 'Térkép'],
+    footer: ['A Kerék Autószerviz kitalált vállalkozás. Ezt a mintaoldalt tervezte és készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#16171a">
+  <ConceptBar business={lang === 'hu' ? 'Kerék Autószerviz' : 'Kerék Car Service'} />
+
+  <div class="kr">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Kerék">
+          <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3.5v5.3M12 15.2v5.3M3.5 12h5.3M15.2 12h5.3" /></svg></span>
+          <span>KERÉK<small>{copy.tagline}</small></span>
+        </a>
+        <nav class="nav" aria-label="Kerék">
+          <a href="#problem">{copy.nav[0]}</a>
+          <a href="#how">{copy.nav[1]}</a>
+          <a href="#visit">{copy.nav[2]}</a>
+        </nav>
+        <button type="button" class="btn btn-small" data-preview-kind="call"><Icon name="phone" /><span>{copy.call}</span></button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <OpenHours hours={hours} variant="badge" class="hero-oh" />
+            <h1>{copy.h1[0]} <span>{copy.h1[1]}</span></h1>
+            <p class="lede">{copy.lede}</p>
+            <div class="actions">
+              <a href="#problem" class="btn">{copy.ctaWhat}</a>
+              <button type="button" class="btn btn-line" data-preview-kind="call"><Icon name="phone" />{copy.call}</button>
+            </div>
+          </div>
+          <div class="hero-media">
+            <Picture src={hero} alt={copy.heroAlt} formats={['avif', 'webp']} quality={64} widths={[400, 640, 900]} sizes="(min-width: 60rem) 38vw, 92vw" loading="eager" fetchpriority="high" />
+          </div>
+        </div>
+        <ul class="promises wrap">
+          {copy.promises.map((p) => <li><Icon name="check" />{p}</li>)}
+        </ul>
+      </section>
+
+      <div class="stripe" aria-hidden="true"></div>
+
+      <section id="problem" class="pick" aria-labelledby="pick-title">
+        <div class="wrap">
+          <h2 id="pick-title">{copy.pickTitle}</h2>
+          <p class="pick-note">{copy.pickNote}</p>
+          <div class="pick-grid" data-picker>
+            <fieldset class="tiles">
+              <legend class="visually-hidden">{copy.pickTitle}</legend>
+              {
+                copy.problems.map((pr, i) => (
+                  <label class="tile">
+                    <input type="radio" name="problem" value={pr.id} checked={i === 0} />
+                    <span class="tile-body">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[pr.id]} />
+                      {pr.label}
+                    </span>
+                  </label>
+                ))
+              }
+            </fieldset>
+            <div class="results" aria-live="polite">
+              {
+                copy.problems.map((pr) => (
+                  <article class="result" data-result={pr.id}>
+                    <h3>{pr.label}</h3>
+                    <dl>
+                      <div>
+                        <dt>{copy.from}</dt>
+                        <dd class="big">{pr.price}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.takes}</dt>
+                        <dd>{pr.time}</dd>
+                      </div>
+                    </dl>
+                    <p>{pr.note}</p>
+                    <div class="result-actions">
+                      <button type="button" class="btn" data-preview-kind="book"><Icon name="calendar" />{copy.book}</button>
+                      <button type="button" class="btn btn-line-dark" data-preview-kind="call"><Icon name="phone" />{copy.actions[0]}</button>
+                    </div>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how" class="how" aria-labelledby="how-title">
+        <div class="wrap how-grid">
+          <div>
+            <h2 id="how-title">{copy.howTitle}</h2>
+            <ol>
+              {
+                copy.how.map(([t, d], i) => (
+                  <li>
+                    <span class="n">{i + 1}</span>
+                    <span>
+                      <strong>{t}</strong>
+                      {d}
+                    </span>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+          <Picture src={engine} alt={copy.engineAlt} formats={['avif', 'webp']} quality={64} widths={[400, 640, 900]} sizes="(min-width: 60rem) 40vw, 92vw" class="how-img" />
+        </div>
+      </section>
+
+      <section class="tyre">
+        <Picture src={tyre} alt={copy.tyreAlt} formats={['avif', 'webp']} quality={60} widths={[640, 960, 1400]} sizes="100vw" class="tyre-img" />
+        <div class="wrap tyre-inner">
+          <h2>{copy.tyreTitle}</h2>
+          <p>{copy.tyreText}</p>
+        </div>
+      </section>
+
+      <section id="visit" class="visit" aria-labelledby="visit-title">
+        <div class="wrap visit-grid">
+          <div>
+            <h2 id="visit-title">{copy.visitTitle}</h2>
+            <address><strong>{copy.address[0]}</strong>{copy.address[1]}</address>
+            <div class="actions">
+              <button type="button" class="btn" data-preview-kind="call"><Icon name="phone" />{copy.call}</button>
+              <button type="button" class="btn btn-line" data-preview-kind="map"><Icon name="map" />{copy.directions}</button>
+            </div>
+          </div>
+          <div class="hours-card"><OpenHours hours={hours} /></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo-text">KERÉK</p>
+      <p>{copy.footer[0]}{' '}<a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}</p>
+    </footer>
+  </div>
+
+  <ActionBar
+    bg="#16171a"
+    fg="#f5f5f2"
+    primaryBg="#ffcc00"
+    primaryFg="#16171a"
+    actions={[
+      { icon: 'phone', label: copy.actions[0], preview: 'call' },
+      { icon: 'calendar', label: copy.actions[1], preview: 'book' },
+      { icon: 'map', label: copy.actions[2], preview: 'map' },
+    ]}
+  />
+</Base>
+
+<script>
+  // Without JavaScript every price card is listed. With it, only the chosen problem shows.
+  const picker = document.querySelector<HTMLElement>('[data-picker]');
+  if (picker) {
+    const results = [...picker.querySelectorAll<HTMLElement>('[data-result]')];
+    const show = () => {
+      const v = picker.querySelector<HTMLInputElement>('input[name=problem]:checked')?.value;
+      results.forEach((r) => (r.hidden = r.dataset.result !== v));
+    };
+    picker.classList.add('is-js');
+    picker.addEventListener('change', show);
+    show();
+  }
+</script>
+
+<style>
+  .kr {
+    --yellow: #ffcc00;
+    --char: #16171a;
+    --char-2: #222327;
+    --char-3: #2e3035;
+    --paper: #f5f5f2;
+    --text: #c9cbcf;
+    --ink-on-light: #16171a;
+    --rule: rgb(255 255 255 / 0.12);
+    background: var(--char);
+    color: var(--text);
+    font-family: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .wrap {
+    width: min(100% - 2.5rem, 74rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .logo,
+  .logo-text {
+    color: #fff;
+    font-family: 'Archivo Black', Impact, sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
+    text-transform: uppercase;
+  }
+  h2 {
+    font-size: clamp(2rem, 1.4rem + 2.8vw, 3.4rem);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.5rem;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid var(--yellow);
+    border-radius: 0.5rem;
+    background: var(--yellow);
+    color: var(--char);
+    font-family: inherit;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 rgb(255 204 0 / 0.35);
+  }
+  .btn :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2.2;
+  }
+  .btn-line {
+    background: transparent;
+    color: #fff;
+    border-color: rgb(255 255 255 / 0.55);
+  }
+  .btn-line-dark {
+    background: transparent;
+    color: var(--char);
+    border-color: var(--char);
+  }
+  .btn-small {
+    min-height: 2.9rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+  .kr :focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 3px;
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(22 23 26 / 0.96);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 1.6rem;
+    text-decoration: none;
+  }
+  .logo small {
+    display: block;
+    color: var(--yellow);
+    font-family: 'Archivo Variable', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .logo-mark {
+    display: grid;
+    place-items: center;
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 0.5rem;
+    background: var(--yellow);
+  }
+  .logo-mark svg {
+    width: 1.9rem;
+    height: 1.9rem;
+    fill: none;
+    stroke: var(--char);
+    stroke-width: 2.4;
+  }
+  .nav {
+    display: none;
+    gap: 2rem;
+  }
+  .nav a {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--yellow);
+  }
+  @media (min-width: 62rem) {
+    .nav {
+      display: flex;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .top .btn-small span {
+      display: none;
+    }
+    .top .btn-small {
+      width: 3rem;
+      padding: 0;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    padding-block: clamp(2rem, 5vw, 4.5rem) 0;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .hero-grid {
+      grid-template-columns: 1.25fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .hero-copy :global(.hero-oh) {
+    --oh-badge-bg: var(--char-3);
+    --oh-badge-fg: #fff;
+  }
+  .hero h1 {
+    margin-top: 1.1rem;
+    font-size: clamp(2.05rem, 1rem + 5.4vw, 5.4rem);
+  }
+  .hero h1 span {
+    display: block;
+    color: var(--yellow);
+  }
+  .lede {
+    max-width: 32rem;
+    margin-top: 1.25rem;
+    color: #e6e7e9;
+    font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  @media (max-width: 30rem) {
+    .actions .btn {
+      width: 100%;
+    }
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 4.4;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border-radius: 1rem;
+  }
+  @media (max-width: 59.99rem) {
+    .hero-media :global(img) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  .promises {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    padding: 0 0 2.5rem;
+    list-style: none;
+  }
+  @media (min-width: 48rem) {
+    .promises {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .promises li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--char-2);
+    color: #fff;
+    font-weight: 700;
+  }
+  .promises :global(svg) {
+    flex: none;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0.25rem;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--char);
+    stroke-width: 3;
+  }
+  .stripe {
+    height: 1.25rem;
+    background: repeating-linear-gradient(-45deg, var(--yellow) 0 1.25rem, var(--char) 1.25rem 2.5rem);
+  }
+
+  /* Picker */
+  .pick {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--paper);
+    color: #3a3c40;
+  }
+  .pick h2 {
+    color: var(--char);
+  }
+  .pick-note {
+    margin-top: 0.6rem;
+    color: var(--char);
+    font-weight: 600;
+  }
+  .pick-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 60rem) {
+    .pick-grid {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: start;
+    }
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  @media (min-width: 40rem) {
+    .tiles {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .tile {
+    position: relative;
+  }
+  .tile input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .tile-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 7rem;
+    padding: 1rem 0.5rem;
+    border: 2px solid #d6d6d1;
+    border-radius: 0.9rem;
+    background: #fff;
+    color: var(--char);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  }
+  .tile-body svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    fill: none;
+    stroke: var(--char);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tile input:hover + .tile-body {
+    border-color: var(--char);
+  }
+  .tile input:checked + .tile-body {
+    border-color: var(--char);
+    background: var(--yellow);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--char);
+  }
+  .tile input:focus-visible + .tile-body {
+    outline: 3px solid #2443db;
+    outline-offset: 2px;
+  }
+  .results {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 60rem) {
+    .results {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+  .result {
+    padding: 1.75rem;
+    border: 2px solid var(--char);
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 8px 8px 0 var(--yellow);
+  }
+  .result[hidden] {
+    display: none;
+  }
+  .result h3 {
+    color: var(--char);
+    font-size: 1.6rem;
+  }
+  .result dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-block: 1.25rem;
+  }
+  .result dt {
+    color: #5b5e63;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .result dd {
+    color: var(--char);
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  @media (max-width: 40rem) {
+    .result dl {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+  }
+  .result dd.big {
+    white-space: nowrap;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .result p {
+    color: #3a3c40;
+  }
+  .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+  }
+  .result-actions .btn {
+    flex: 1 1 10rem;
+  }
+  .pick-grid:not(.is-js) .results {
+    position: static;
+  }
+
+  /* How */
+  .how {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .how-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .how-grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .how ol {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .how li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .how li strong {
+    display: block;
+    color: #fff;
+    font-size: 1.3rem;
+  }
+  .n {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.6rem;
+    background: var(--yellow);
+    color: var(--char);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.4rem;
+  }
+  .how :global(.how-img) {
+    width: 100%;
+    aspect-ratio: 4 / 3.4;
+    object-fit: cover;
+    object-position: 50% 35%;
+    border-radius: 1rem;
+  }
+
+  /* Tyre band */
+  .tyre {
+    position: relative;
+    display: grid;
+    min-height: 22rem;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .tyre > :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .tyre :global(.tyre-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tyre::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgb(22 23 26 / 0.92), rgb(22 23 26 / 0.55));
+  }
+  .tyre-inner {
+    align-self: center;
+    padding-block: 3.5rem;
+  }
+  .tyre-inner h2 {
+    max-width: 16ch;
+  }
+  .tyre-inner p {
+    max-width: 28rem;
+    margin-top: 1rem;
+    color: #fff;
+    font-size: 1.25rem;
+  }
+
+  /* Visit */
+  .visit {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--char-2);
+  }
+  .visit-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 56rem) {
+    .visit-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+  address {
+    display: grid;
+    margin-top: 1.25rem;
+    font-style: normal;
+  }
+  address strong {
+    color: #fff;
+    font-size: 1.5rem;
+  }
+  .hours-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--char-3);
+    color: #fff;
+    --oh-rule: rgb(255 255 255 / 0.12);
+    --oh-today-bg: rgb(255 204 0 / 0.18);
+    --oh-badge-bg: var(--char);
+    --oh-badge-fg: #fff;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2rem 2.5rem;
+    font-size: 0.95rem;
+  }
+  .logo-text {
+    font-size: 1.3rem;
+  }
+  .foot a {
+    color: var(--yellow);
+    font-weight: 800;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

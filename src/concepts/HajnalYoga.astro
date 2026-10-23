@@ -6,6 +6,7 @@ import '../styles/concept-base.css';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
 import { getLang, localePath } from '../i18n';
 import meditate from '../assets/photos/hajnal-meditate.jpg';
 import seated from '../assets/photos/hajnal-seated.jpg';
@@ -218,7 +219,7 @@ const copy = {
                       <span>{teacher}</span>
                     </span>
                     <span class:list={['spots', { full: spots === 0 }]}>{spots === 0 ? copy.full : `${spots} ${copy.spots}`}</span>
-                    <button type="button" class="slot-btn" disabled={spots === 0} data-book>
+                    <button type="button" class="slot-btn" disabled={spots === 0} data-preview={copy.bookedPreview}>
                       {copy.bookSlot}
                     </button>
                   </li>
@@ -227,7 +228,6 @@ const copy = {
             </div>
           ))
         }
-        <p class="tt-toast" role="status" aria-live="polite" data-toast={copy.bookedPreview}></p>
       </section>
 
       <section id="passes" class="passes">
@@ -287,6 +287,7 @@ const copy = {
       </p>
     </footer>
   </div>
+  <ActionBar bg="#faf6ef" fg="#2f2a24" primaryBg="#2f2a24" primaryFg="#faf6ef" actions={[{ icon: 'calendar', label: lang === 'hu' ? 'Órarend' : 'Timetable', href: '#timetable' }, { icon: 'phone', label: lang === 'hu' ? 'Hívás' : 'Call', preview: 'call' }, { icon: 'map', label: lang === 'hu' ? 'Térkép' : 'Map', preview: 'map' }]} />
 </Base>
 
 <script>
@@ -316,17 +317,6 @@ const copy = {
       });
     });
   }
-  const toast = document.querySelector<HTMLElement>('.tt-toast');
-  let timer = 0;
-  document.querySelectorAll('[data-book]').forEach((b) =>
-    b.addEventListener('click', () => {
-      if (!toast) return;
-      toast.textContent = toast.dataset.toast ?? '';
-      toast.classList.add('on');
-      clearTimeout(timer);
-      timer = window.setTimeout(() => toast.classList.remove('on'), 3500);
-    }),
-  );
 </script>
 
 <style>
@@ -342,7 +332,7 @@ const copy = {
     background: var(--sand);
     color: var(--text);
     font-family: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
   .wrap {
     width: min(100% - clamp(2.5rem, 6vw, 5rem), 74rem);

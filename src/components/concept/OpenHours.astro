@@ -1,0 +1,166 @@
+---
+// Opening hours with a live "Open now / Closed" badge and today's row highlighted.
+// Customers' first question is "are they open?", so it answers that at a glance.
+// Without JavaScript the full table still shows; the badge stays hidden.
+import { getLang } from '../../i18n';
+
+/** Monday-first. Each day: [open, close] as 'HH:MM', or null when closed. */
+type Day = [string, string] | null;
+interface Props {
+  hours: Day[];
+  /** 'badge' = just the live badge, 'table' = table + badge. */
+  variant?: 'badge' | 'table';
+  class?: string;
+}
+const { hours, variant = 'table', class: className } = Astro.props;
+const lang = getLang(Astro.url);
+const t = {
+  en: {
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    closed: 'Closed',
+    openNow: 'Open now',
+    until: 'until',
+    closedNow: 'Closed now',
+    opens: 'opens',
+    today: 'today',
+    tomorrow: 'tomorrow',
+    caption: 'Opening hours',
+    lower: false,
+  },
+  hu: {
+    days: ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'],
+    closed: 'Zárva',
+    openNow: 'Most nyitva',
+    until: 'eddig:',
+    closedNow: 'Most zárva',
+    opens: 'nyit:',
+    today: 'ma',
+    tomorrow: 'holnap',
+    caption: 'Nyitvatartás',
+    lower: true,
+  },
+}[lang];
+---
+
+<div class:list={['oh', className]} data-oh={JSON.stringify(hours)} data-t={JSON.stringify(t)}>
+  <p class="oh-badge" hidden><span class="oh-dot" aria-hidden="true"></span><span class="oh-text"></span></p>
+  {
+    variant === 'table' && (
+      <table class="oh-table">
+        <caption class="oh-caption">{t.caption}</caption>
+        <tbody>
+          {hours.map((h, i) => (
+            <tr data-day={i}>
+              <th scope="row">{t.days[i]}</th>
+              <td>{h ? `${h[0]} – ${h[1]}` : t.closed}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+</div>
+
+<script>
+  type Day = [string, string] | null;
+  const toMin = (s: string) => {
+    const [h, m] = s.split(':').map(Number);
+    return h * 60 + m;
+  };
+  document.querySelectorAll<HTMLElement>('[data-oh]').forEach((root) => {
+    const hours: Day[] = JSON.parse(root.dataset.oh!);
+    const t = JSON.parse(root.dataset.t!);
+    const now = new Date();
+    const today = (now.getDay() + 6) % 7; // Monday = 0
+    const mins = now.getHours() * 60 + now.getMinutes();
+    root.querySelector(`tr[data-day="${today}"]`)?.setAttribute('data-today', '');
+    const h = hours[today];
+    const badge = root.querySelector<HTMLElement>('.oh-badge')!;
+    const text = badge.querySelector('.oh-text')!;
+    if (h && mins >= toMin(h[0]) && mins < toMin(h[1])) {
+      badge.dataset.state = 'open';
+      text.textContent = `${t.openNow} · ${t.until} ${h[1]}`;
+    } else {
+      badge.dataset.state = 'closed';
+      let label = '';
+      if (h && mins < toMin(h[0])) label = `${t.today} ${h[0]}`;
+      else
+        for (let d = 1; d <= 7; d++) {
+          const next = hours[(today + d) % 7];
+          if (next) {
+            const name = t.days[(today + d) % 7];
+            label = `${d === 1 ? t.tomorrow : t.lower ? name.toLowerCase() : name} ${next[0]}`;
+            break;
+          }
+        }
+      text.textContent = `${t.closedNow} · ${t.opens} ${label}`;
+    }
+    badge.hidden = false;
+  });
+</script>
+
+<style>
+  .live-hours {
+    margin-bottom: 0.9rem;
+  }
+  .oh-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.95rem 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: var(--oh-badge-bg, #fff);
+    color: var(--oh-badge-fg, #15161a);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  }
+  .oh-badge[hidden] {
+    display: none;
+  }
+  .oh-dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: #1f9d55;
+    box-shadow: 0 0 0 4px rgb(31 157 85 / 0.18);
+  }
+  .oh-badge[data-state='closed'] .oh-dot {
+    background: #c2362b;
+    box-shadow: 0 0 0 4px rgb(194 54 43 / 0.18);
+  }
+  .oh-table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-size: 1.0625rem;
+  }
+  .oh-caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .oh-table th,
+  .oh-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--oh-rule, rgb(0 0 0 / 0.12));
+    text-align: left;
+    font-weight: 500;
+  }
+  .oh-table td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .oh-table tr[data-today] {
+    background: var(--oh-today-bg, rgb(0 0 0 / 0.06));
+    font-weight: 800;
+  }
+  .oh-table tr[data-today] th,
+  .oh-table tr[data-today] td {
+    font-weight: 800;
+  }
+</style>

@@ -1,0 +1,751 @@
+---
+import '@fontsource-variable/rubik';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
+import TextSize from '../components/concept/TextSize.astro';
+import Icon from '../components/Icon.astro';
+import { getLang, localePath } from '../i18n';
+import hero from '../assets/photos/villam-hero.jpg';
+import panel from '../assets/photos/villam-panel.jpg';
+import bath from '../assets/photos/villam-bath.jpg';
+
+const lang = getLang(Astro.url);
+
+const icons: Record<string, string> = {
+  leak: '<path d="M12 3s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11Z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/>',
+  drain: '<path d="M4 10h16M6 10v3a6 6 0 0 0 12 0v-3"/><circle cx="12" cy="13" r="1.4"/><path d="M12 19v2"/>',
+  boiler: '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 15c0-1.5 2-2 2-4 1 1 2 2.2 2 3.6a2 2 0 1 1-4 .4Z"/><path d="M9 7h6"/>',
+  power: '<path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/>',
+  socket: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9.5 10v2M14.5 10v2M12 15.5v.1"/><path d="m18 3 2 2M20 8h1"/>',
+  other: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.8-.7-.7-2.8 2.5-2.5Z"/>',
+};
+
+const copy = {
+  en: {
+    title: 'Villám Repairs — plumber & electrician (sample website by Mojtaba Maleki)',
+    description: 'A sample website for a made-up 24/7 plumber and electrician with a calm “what happened?” helper, designed and built by Mojtaba Maleki.',
+    tagline: 'plumber & electrician',
+    strip: 'Day and night · usually with you within an hour',
+    callNow: 'Call now',
+    h1: ['Leak? Power cut?', 'We’re on our way.'],
+    lede: 'Plumbing and electrical repairs, day and night. Clear prices, no mess left behind.',
+    bigCall: 'Call now, day or night',
+    help: 'What should I do right now?',
+    heroAlt: 'A smiling plumber in a red T-shirt fixing the pipes under a sink',
+    pickTitle: 'What happened?',
+    pickNote: 'Tap what you see. We’ll tell you what to do while we’re on the way.',
+    doNow: 'Do this right now',
+    price: 'Usual price',
+    problems: [
+      { id: 'leak', label: 'Water leak', steps: ['Turn off the main water tap. It’s usually by the water meter or under the sink.', 'Put towels or a bucket under the leak.', 'Keep away from sockets if water is near them.'], price: 'from 14 000 Ft' },
+      { id: 'drain', label: 'Blocked drain', steps: ['Stop running water into that sink or toilet.', 'Don’t pour chemicals in. They can damage the pipes.'], price: 'from 12 000 Ft' },
+      { id: 'boiler', label: 'No hot water', steps: ['Check the boiler has power and the gas tap is open.', 'Look for an error code on the display and tell us when you call.'], price: 'from 15 000 Ft' },
+      { id: 'power', label: 'Power cut', steps: ['Check if your neighbours have power too.', 'Look at your fuse box. Is a switch pointing down?', 'If it switches off again straight away, leave it off and call us.'], price: 'from 13 000 Ft' },
+      { id: 'socket', label: 'Sparking socket', steps: ['Don’t touch it. Switch off the power at the fuse box.', 'If you smell burning, leave the room and call us.'], price: 'from 13 000 Ft' },
+      { id: 'other', label: 'Something else', steps: ['Call us and describe what you see. We’ll guide you on the phone.'], price: 'we’ll tell you on the phone' },
+    ],
+    callUs: 'Call us now',
+    pricesTitle: 'Prices, plainly',
+    prices: [
+      ['Call-out, daytime (7:00–19:00)', '9 900 Ft'],
+      ['Call-out, nights & weekends', '14 900 Ft'],
+      ['Each hour of work', '12 000 Ft'],
+      ['Parts', 'at cost, on the receipt'],
+    ],
+    priceNote: 'We tell you the full price before we start. No surprises.',
+    promisesTitle: 'Our promise',
+    promises: ['Shoe covers on, mess cleaned up', 'Price agreed before work', 'Receipt and 1-year warranty'],
+    areasTitle: 'Where we work',
+    areas: ['City centre', 'North side', 'South side', 'Lakeside', 'Industrial park', 'Villages within 20 km'],
+    panelAlt: 'An electrician in gloves testing a fuse board with a meter',
+    bathAlt: 'A plumber in overalls with a toolbox working in a clean bathroom',
+    actions: ['Call', 'Help', 'Area'],
+    footer: ['Villám Repairs is a made-up business. This sample website was designed and built by', 'Photos: Unsplash.'],
+  },
+  hu: {
+    title: 'Villám Szerelő — víz- és villanyszerelés (Mojtaba Maleki mintaoldala)',
+    description: 'Mintaoldal egy kitalált, éjjel-nappal elérhető víz- és villanyszerelőnek nyugodt „mi történt?” segítővel. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'víz- és villanyszerelés',
+    strip: 'Éjjel-nappal · általában egy órán belül ott vagyunk',
+    callNow: 'Hívás most',
+    h1: ['Csőtörés? Áramszünet?', 'Már indulunk is.'],
+    lede: 'Víz- és villanyszerelés éjjel-nappal. Világos árak, rendet hagyunk magunk után.',
+    bigCall: 'Hívjon most, éjjel-nappal',
+    help: 'Mit tegyek most?',
+    heroAlt: 'Mosolygó, piros pólós vízszerelő javítja a mosogató alatti csöveket',
+    pickTitle: 'Mi történt?',
+    pickNote: 'Koppintson arra, amit lát. Elmondjuk, mit tegyen, amíg odaérünk.',
+    doNow: 'Ezt tegye most',
+    price: 'Szokásos ár',
+    problems: [
+      { id: 'leak', label: 'Csőtörés, szivárgás', steps: ['Zárja el a fő vízcsapot. Általában a vízóránál vagy a mosogató alatt van.', 'Tegyen törölközőt vagy vödröt a szivárgás alá.', 'Ha víz van a konnektor közelében, ne menjen oda.'], price: '14 000 Ft-tól' },
+      { id: 'drain', label: 'Dugulás', steps: ['Ne engedjen több vizet abba a lefolyóba vagy WC-be.', 'Ne öntsön bele vegyszert, az károsíthatja a csöveket.'], price: '12 000 Ft-tól' },
+      { id: 'boiler', label: 'Nincs meleg víz', steps: ['Nézze meg, van-e áram a kazánon, és nyitva van-e a gázcsap.', 'Ha a kijelzőn hibakód van, mondja meg nekünk telefonon.'], price: '15 000 Ft-tól' },
+      { id: 'power', label: 'Nincs áram', steps: ['Nézze meg, a szomszédoknál van-e áram.', 'Nézze meg a biztosítéktáblát: lefelé áll valamelyik kapcsoló?', 'Ha visszakapcsolás után azonnal leold, hagyja lekapcsolva, és hívjon minket.'], price: '13 000 Ft-tól' },
+      { id: 'socket', label: 'Szikrázó konnektor', steps: ['Ne érjen hozzá. Kapcsolja le az áramot a biztosítéktáblán.', 'Ha égett szagot érez, menjen ki a szobából, és hívjon minket.'], price: '13 000 Ft-tól' },
+      { id: 'other', label: 'Valami más', steps: ['Hívjon minket, és mondja el, mit lát. Telefonon végigvezetjük.'], price: 'telefonon megmondjuk' },
+    ],
+    callUs: 'Hívjon most',
+    pricesTitle: 'Az árak, egyszerűen',
+    prices: [
+      ['Kiszállás nappal (7:00–19:00)', '9 900 Ft'],
+      ['Kiszállás éjjel és hétvégén', '14 900 Ft'],
+      ['Munkadíj óránként', '12 000 Ft'],
+      ['Alkatrész', 'beszerzési áron, számlával'],
+    ],
+    priceNote: 'A munka előtt megmondjuk a teljes árat. Nincs meglepetés.',
+    promisesTitle: 'Amit vállalunk',
+    promises: ['Cipővédő, takarítás magunk után', 'Ár egyeztetése munka előtt', 'Számla és 1 év garancia'],
+    areasTitle: 'Hol dolgozunk',
+    areas: ['Belváros', 'Északi városrész', 'Déli városrész', 'Tópart', 'Ipari park', 'Falvak 20 km-en belül'],
+    panelAlt: 'Kesztyűs villanyszerelő mérőműszerrel ellenőrzi a biztosítéktáblát',
+    bathAlt: 'Overallos vízszerelő szerszámosládával dolgozik egy tiszta fürdőszobában',
+    actions: ['Hívás', 'Segítség', 'Körzet'],
+    footer: ['A Villám Szerelő kitalált vállalkozás. Ezt a mintaoldalt tervezte és készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#0d2b5c">
+  <ConceptBar business={lang === 'hu' ? 'Villám Szerelő' : 'Villám Repairs'} />
+
+  <div class="vl">
+    <p class="strip"><span class="pulse" aria-hidden="true"></span>{copy.strip}</p>
+
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Villám">
+          <span class="bolt" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" /></svg></span>
+          <span>VILLÁM<small>{copy.tagline}</small></span>
+        </a>
+        <div class="tools">
+          <TextSize class="ts-vl" />
+          <button type="button" class="btn btn-small" data-preview-kind="call"><Icon name="phone" /><span>{copy.callNow}</span></button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <h1>{copy.h1[0]} <span>{copy.h1[1]}</span></h1>
+            <p class="lede">{copy.lede}</p>
+            <button type="button" class="btn btn-huge" data-preview-kind="call"><Icon name="phone" />{copy.bigCall}</button>
+            <a href="#help" class="help-link">{copy.help} <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-media">
+            <Picture src={hero} alt={copy.heroAlt} formats={['avif', 'webp']} quality={64} widths={[400, 640, 900, 1200]} sizes="(min-width: 60rem) 44vw, 92vw" loading="eager" fetchpriority="high" />
+          </div>
+        </div>
+      </section>
+
+      <section id="help" class="pick" aria-labelledby="pick-title">
+        <div class="wrap">
+          <h2 id="pick-title">{copy.pickTitle}</h2>
+          <p class="note">{copy.pickNote}</p>
+          <div class="pick-grid" data-picker>
+            <fieldset class="tiles">
+              <legend class="visually-hidden">{copy.pickTitle}</legend>
+              {
+                copy.problems.map((p, i) => (
+                  <label class="tile">
+                    <input type="radio" name="what" value={p.id} checked={i === 0} />
+                    <span class="tile-body">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[p.id]} />
+                      {p.label}
+                    </span>
+                  </label>
+                ))
+              }
+            </fieldset>
+            <div class="results" aria-live="polite">
+              {
+                copy.problems.map((p) => (
+                  <article class="result" data-result={p.id}>
+                    <h3>{p.label}</h3>
+                    <p class="do-now">{copy.doNow}</p>
+                    <ol>
+                      {p.steps.map((s) => (
+                        <li>{s}</li>
+                      ))}
+                    </ol>
+                    <p class="usual">
+                      {copy.price}: <strong>{p.price}</strong>
+                    </p>
+                    <button type="button" class="btn btn-wide" data-preview-kind="call"><Icon name="phone" />{copy.callUs}</button>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="prices" aria-labelledby="prices-title">
+        <div class="wrap prices-grid">
+          <div>
+            <h2 id="prices-title">{copy.pricesTitle}</h2>
+            <table>
+              <tbody>
+                {copy.prices.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+              </tbody>
+            </table>
+            <p class="note strong">{copy.priceNote}</p>
+          </div>
+          <Picture src={panel} alt={copy.panelAlt} formats={['avif', 'webp']} quality={62} widths={[400, 640, 900]} sizes="(min-width: 60rem) 40vw, 92vw" class="side-img" />
+        </div>
+      </section>
+
+      <section class="promises">
+        <div class="wrap promises-grid">
+          <Picture src={bath} alt={copy.bathAlt} formats={['avif', 'webp']} quality={62} widths={[400, 640, 900]} sizes="(min-width: 60rem) 40vw, 92vw" class="side-img" />
+          <div>
+            <h2>{copy.promisesTitle}</h2>
+            <ul class="promise-list">
+              {copy.promises.map((p) => <li><Icon name="check" />{p}</li>)}
+            </ul>
+            <h3 id="area" class="areas-title">{copy.areasTitle}</h3>
+            <ul class="areas">
+              {copy.areas.map((a) => <li>{a}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo-text">VILLÁM</p>
+      <p>{copy.footer[0]}{' '}<a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}</p>
+    </footer>
+  </div>
+
+  <ActionBar
+    bg="#0d2b5c"
+    fg="#ffffff"
+    primaryBg="#ff6b1a"
+    primaryFg="#14130f"
+    actions={[
+      { icon: 'phone', label: copy.actions[0], preview: 'call' },
+      { icon: 'check', label: copy.actions[1], href: '#help' },
+      { icon: 'map', label: copy.actions[2], href: '#area' },
+    ]}
+  />
+</Base>
+
+<script>
+  const picker = document.querySelector<HTMLElement>('[data-picker]');
+  if (picker) {
+    const results = [...picker.querySelectorAll<HTMLElement>('[data-result]')];
+    const show = () => {
+      const v = picker.querySelector<HTMLInputElement>('input[name=what]:checked')?.value;
+      results.forEach((r) => (r.hidden = r.dataset.result !== v));
+    };
+    picker.addEventListener('change', show);
+    show();
+  }
+</script>
+
+<style>
+  .vl {
+    --navy: #0d2b5c;
+    --navy-2: #133a78;
+    --orange: #ff6b1a;
+    --orange-ink: #b84300;
+    --ice: #eef3fb;
+    --ink: #0c1a33;
+    --text: #34435b;
+    --rule: #d6dfee;
+    background: #fff;
+    color: var(--text);
+    font-family: 'Rubik Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .wrap {
+    width: min(100% - 2.5rem, 72rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--ink);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+  }
+  h2 {
+    font-size: clamp(2.1rem, 1.6rem + 2.4vw, 3.3rem);
+  }
+  .note {
+    margin-top: 0.6rem;
+    font-size: 1.15rem;
+  }
+  .strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3.5rem;
+    padding: 0.8rem 1.5rem;
+    border: 0;
+    border-radius: 0.9rem;
+    background: var(--orange);
+    color: #14130f;
+    font-family: inherit;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 6px 0 var(--orange-ink);
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  .btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 var(--orange-ink);
+  }
+  .btn :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+    stroke-width: 2.4;
+  }
+  .btn-small {
+    min-height: 2.9rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    box-shadow: 0 4px 0 var(--orange-ink);
+  }
+  .btn-huge {
+    width: 100%;
+    max-width: 30rem;
+    min-height: 4.5rem;
+    margin-top: 2rem;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  }
+  .btn-huge :global(svg) {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+  .btn-wide {
+    width: 100%;
+  }
+  .vl :focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 3px;
+  }
+
+  .strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1rem;
+    background: var(--orange);
+    color: #14130f;
+    font-weight: 700;
+    text-align: center;
+  }
+  .pulse {
+    flex: none;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: #14130f;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse {
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--navy);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+    font-size: 1.55rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .logo small {
+    display: block;
+    margin-top: 0.2rem;
+    color: #b9c8e6;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .bolt {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.7rem;
+    background: var(--orange);
+  }
+  .bolt svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    fill: #14130f;
+  }
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .tools :global(.ts-vl) {
+    --ts-border: rgb(255 255 255 / 0.3);
+    --ts-fg: #fff;
+    --ts-active-bg: #fff;
+    --ts-active-fg: var(--navy);
+  }
+  @media (max-width: 47.99rem) {
+    .tools .btn-small {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    padding-block: clamp(2rem, 5vw, 4.5rem);
+    background: var(--navy);
+    color: #d4def0;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .hero-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .hero h1 {
+    color: #fff;
+    font-size: clamp(2.5rem, 1.3rem + 5vw, 5rem);
+  }
+  .hero h1 span {
+    display: block;
+    color: var(--orange);
+  }
+  .lede {
+    max-width: 30rem;
+    margin-top: 1.1rem;
+    color: #fff;
+    font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  }
+  .help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    margin-top: 1rem;
+    color: #fff;
+    font-weight: 700;
+    text-underline-offset: 0.3em;
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 60% 50%;
+    border-radius: 1.5rem;
+    border: 4px solid var(--navy-2);
+  }
+
+  /* Picker */
+  .pick {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--ice);
+  }
+  .pick-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 60rem) {
+    .pick-grid {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: start;
+    }
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .tile {
+    position: relative;
+  }
+  .tile input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .tile-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 7rem;
+    height: 100%;
+    padding: 1rem 0.5rem;
+    border: 2px solid var(--rule);
+    border-radius: 1rem;
+    background: #fff;
+    color: var(--ink);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .tile-body svg {
+    width: 2.6rem;
+    height: 2.6rem;
+    fill: none;
+    stroke: var(--navy);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tile input:hover + .tile-body {
+    border-color: var(--navy);
+  }
+  .tile input:checked + .tile-body {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: #fff;
+  }
+  .tile input:checked + .tile-body svg {
+    stroke: var(--orange);
+  }
+  .tile input:focus-visible + .tile-body {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+  }
+  .results {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 60rem) {
+    .results {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+  .result {
+    padding: 1.75rem;
+    border-radius: 1.25rem;
+    background: #fff;
+    border-left: 8px solid var(--orange);
+    box-shadow: 0 20px 40px -30px rgb(13 43 92 / 0.5);
+  }
+  .result[hidden] {
+    display: none;
+  }
+  .result h3 {
+    font-size: 1.7rem;
+  }
+  .do-now {
+    margin-top: 0.75rem;
+    color: var(--orange-ink);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+  }
+  .result ol {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0.75rem 0 1.25rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .result li {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    color: var(--ink);
+    font-weight: 500;
+    counter-increment: step;
+  }
+  .result li::before {
+    content: counter(step);
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-weight: 800;
+  }
+  .usual {
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+
+  /* Prices & promises */
+  .prices,
+  .promises {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .promises {
+    background: var(--ice);
+  }
+  .prices-grid,
+  .promises-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .prices-grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+    }
+    .promises-grid {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 4rem;
+    }
+  }
+  table {
+    width: 100%;
+    margin-top: 1.5rem;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: 1rem 0.25rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  td {
+    color: var(--navy);
+    font-weight: 800;
+    text-align: right;
+  }
+  .vl :global(.side-img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 1.5rem;
+  }
+  .promise-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .promise-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .promise-list :global(svg) {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    padding: 0.3rem;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #14130f;
+    stroke-width: 3;
+  }
+  .areas-title {
+    margin-top: 2.25rem;
+    font-size: 1.5rem;
+    scroll-margin-top: 6rem;
+  }
+  .areas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+  .areas li {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-weight: 700;
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2rem 2.5rem;
+    font-size: 0.95rem;
+  }
+  .logo-text {
+    color: var(--ink);
+    font-size: 1.3rem;
+    font-weight: 900;
+  }
+  .foot a {
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

@@ -31,12 +31,18 @@ const shot = (slug: string, kind: 'desktop' | 'preview' | 'mobile', lang: Lang) 
 };
 
 const base = [
+  { key: 'nagyi', slug: 'nagyi-konyhaja', name: 'Nagyi Konyhája', tone: '#b3261e', stage: '#f3dccb' },
+  { key: 'villam', slug: 'villam-szerelo', name: 'Villám', tone: '#ff6b1a', stage: '#16305e', dark: true },
+  { key: 'pipacs', slug: 'pipacs-viragbolt', name: 'Pipacs', tone: '#d93425', stage: '#fbd9cf' },
+  { key: 'kerek', slug: 'kerek-autoszerviz', name: 'Kerék', tone: '#ffcc00', stage: '#232428', dark: true },
+  { key: 'mosoly', slug: 'mosoly-fogaszat', name: 'Mosoly', tone: '#0b5257', stage: '#d4ece8' },
+  { key: 'topart', slug: 'topart-vendeghaz', name: 'Tópart', tone: '#1f5f8b', stage: '#d9e6ef' },
   { key: 'morzsa', slug: 'morzsa', name: 'Morzsa', tone: '#a64b22', stage: '#ecd8c2' },
   { key: 'north', slug: 'north-and-fade', name: 'North & Fade', tone: '#cfa75e', stage: '#24221e', dark: true },
-  { key: 'ledger', slug: 'ledger-and-light', name: 'Ledger & Light', tone: '#1f4d3a', stage: '#d3e4d8' },
   { key: 'hajnal', slug: 'hajnal-yoga', name: 'Hajnal', tone: '#b4704f', stage: '#e6d9c6' },
   { key: 'talkative', slug: 'talkative', name: 'Talkative', tone: '#ff6a4d', stage: '#ffdf6e' },
   { key: 'kova', slug: 'kova-interiors', name: 'Kova Interiors', tone: '#1d1c1a', stage: '#d8d4ca' },
+  { key: 'ledger', slug: 'ledger-and-light', name: 'Ledger & Light', tone: '#1f4d3a', stage: '#d3e4d8' },
 ] as const;
 
 /**

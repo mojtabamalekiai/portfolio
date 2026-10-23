@@ -1,18 +1,14 @@
 ---
-import { site, external } from '../data/site';
 import { getLang } from '../i18n';
 import { ui } from '../i18n/ui';
-import Icon from './Icon.astro';
 
 const t = ui[getLang(Astro.url)];
 ---
 
 <section id="process" class="section steps-section" aria-labelledby="process-title">
   <div class="container">
-    <div class="head" data-reveal>
-      <p class="eyebrow">{t.steps.eyebrow}</p>
-      <h2 id="process-title">{t.steps.title}</h2>
-    </div>
+    <p class="eyebrow">{t.steps.eyebrow}</p>
+    <h2 id="process-title">{t.steps.title}</h2>
     <ol class="steps">
       {
         t.steps.items.map((s, i) => (
@@ -20,100 +16,67 @@ const t = ui[getLang(Astro.url)];
             <span class="num" aria-hidden="true">
               {i + 1}
             </span>
-            <h3>{s.title}</h3>
-            <p>{s.text}</p>
+            <div>
+              <h3>
+                <span class="visually-hidden">{i + 1}. </span>
+                {s.title}
+              </h3>
+              <p>{s.text}</p>
+            </div>
           </li>
         ))
       }
     </ol>
-    <div class="cta" data-reveal style="--reveal-delay: 3">
-      <a href={site.facebook} class="btn btn--primary" {...external}>
-        <Icon name="messenger" />
-        {t.steps.cta}
-        <span class="visually-hidden">{t.newTab}</span>
-      </a>
-    </div>
   </div>
 </section>
 
 <style>
   .steps-section {
-    padding-block: clamp(4.5rem, 3rem + 5vw, 7.5rem);
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+    background: var(--card);
+    border-block: 1px solid var(--line);
   }
-  .head {
-    display: grid;
-    gap: var(--space-s);
-    margin-bottom: var(--space-xl);
-  }
-  .head h2 {
+  h2 {
+    margin-top: var(--space-s);
     font-size: var(--text-3xl);
-    max-width: 16ch;
   }
   .steps {
     display: grid;
     gap: var(--space-m);
+    margin-top: var(--space-xl);
     padding: 0;
     list-style: none;
   }
-  @media (min-width: 48rem) {
+  @media (min-width: 52rem) {
     .steps {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--space-l);
     }
   }
   .steps li {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: var(--space-s);
-    align-items: baseline;
-    padding: var(--space-l);
-    border-radius: var(--radius-l);
-    background: var(--card);
-    border: 1px solid var(--line);
-  }
-  @media (min-width: 48rem) {
-    .steps li {
-      grid-template-columns: 1fr;
-    }
-    /* Arrow connecting the cards */
-    .steps li:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: calc(-1 * var(--space-l) / 2 - 0.45rem);
-      z-index: 1;
-      width: 0.9rem;
-      height: 0.9rem;
-      border-top: 1.5px solid var(--accent);
-      border-right: 1.5px solid var(--accent);
-      transform: translateY(-50%) rotate(45deg);
-    }
+    display: flex;
+    gap: var(--space-m);
+    align-items: flex-start;
   }
   .num {
-    grid-row: span 2;
-    color: var(--accent);
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
     font-family: var(--font-display);
-    font-size: clamp(2.6rem, 2rem + 2vw, 3.75rem);
-    font-style: italic;
-    font-weight: 300;
-    line-height: 0.9;
-  }
-  @media (min-width: 48rem) {
-    .num {
-      grid-row: auto;
-      margin-bottom: var(--space-m);
-    }
+    font-size: 1.75rem;
+    line-height: 1;
   }
   .steps h3 {
     font-size: var(--text-xl);
-    line-height: 1.15;
+    line-height: 1.2;
   }
   .steps p {
-    margin-top: 0.35rem;
+    margin-top: 0.3rem;
     color: var(--ink-2);
-  }
-  .cta {
-    margin-top: var(--space-l);
   }
 </style>

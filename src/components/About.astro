@@ -91,6 +91,11 @@ const t = ui[getLang(Astro.url)];
       gap: clamp(3rem, 7vw, 7rem);
     }
   }
+  @media (min-width: 64rem) {
+    .photo {
+      aspect-ratio: 4 / 4.6;
+    }
+  }
   .card {
     width: 100%;
     max-width: 26rem;
@@ -108,7 +113,7 @@ const t = ui[getLang(Astro.url)];
   }
   .photo {
     position: relative;
-    aspect-ratio: 4 / 4.6;
+    aspect-ratio: 4 / 3.6;
     overflow: hidden;
     background: var(--night);
   }
@@ -149,7 +154,13 @@ const t = ui[getLang(Astro.url)];
     background: var(--accent);
   }
   dl {
+    display: none;
     padding: var(--space-2xs) var(--space-l) var(--space-m);
+  }
+  @media (min-width: 64rem) {
+    dl {
+      display: block;
+    }
   }
   dl div {
     display: grid;
@@ -158,9 +169,10 @@ const t = ui[getLang(Astro.url)];
     border-top: 1px solid rgb(239 235 226 / 0.1);
   }
   dt {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    color: #c4c1b9;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
   dd {
@@ -180,6 +192,7 @@ const t = ui[getLang(Astro.url)];
     font-size: var(--text-lg);
   }
   .about-copy :global(.presenting) {
+    display: none;
     width: 100%;
     max-width: 38rem;
     aspect-ratio: 16 / 9;
@@ -188,6 +201,11 @@ const t = ui[getLang(Astro.url)];
     object-position: 50% 30%;
     border-radius: var(--radius-l);
     border: 1px solid rgb(239 235 226 / 0.1);
+  }
+  @media (min-width: 64rem) {
+    .about-copy :global(.presenting) {
+      display: block;
+    }
   }
   .reasons {
     display: grid;

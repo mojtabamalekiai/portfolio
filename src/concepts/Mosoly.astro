@@ -1,0 +1,1040 @@
+---
+import '@fontsource-variable/plus-jakarta-sans';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
+import OpenHours from '../components/concept/OpenHours.astro';
+import TextSize from '../components/concept/TextSize.astro';
+import Icon from '../components/Icon.astro';
+import { getLang, localePath } from '../i18n';
+import hero from '../assets/photos/mosoly-hero.jpg';
+import room from '../assets/photos/mosoly-room.jpg';
+import smile from '../assets/photos/mosoly-smile.jpg';
+
+const lang = getLang(Astro.url);
+const hours: ([string, string] | null)[] = [
+  ['08:00', '19:00'],
+  ['08:00', '19:00'],
+  ['08:00', '19:00'],
+  ['08:00', '19:00'],
+  ['08:00', '14:00'],
+  null,
+  null,
+];
+
+const copy = {
+  en: {
+    title: 'Mosoly Dental (sample website by Mojtaba Maleki)',
+    description: 'A sample website for a made-up family dental practice with simple online booking, designed and built by Mojtaba Maleki.',
+    tagline: 'dental practice',
+    emergency: 'Toothache? We see emergencies the same day.',
+    callNow: 'Call now',
+    nav: ['Treatments', 'Prices', 'Find us'],
+    book: 'Book a visit',
+    h1: ['Gentle dental care', 'for the whole family.'],
+    lede: 'No rush, no lecture, and no surprises on the bill.',
+    seePrices: 'See prices',
+    heroAlt: 'A smiling dentist talking with a relaxed patient in a bright dental chair',
+    trust: ['Free first check-up', 'Pain-free numbing', 'Step-free entrance'],
+    bookTitle: 'Book in three easy steps',
+    stepOf: (a: number, b: number) => `Step ${a} of ${b}`,
+    q: ['What do you need?', 'Which day suits you?', 'What time?'],
+    reasons: [
+      { id: 'check', icon: 'search', label: 'Check-up' },
+      { id: 'pain', icon: 'alert', label: 'Toothache' },
+      { id: 'clean', icon: 'spark', label: 'Cleaning' },
+      { id: 'teeth', icon: 'tooth', label: 'Dentures or implants' },
+    ],
+    weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    times: ['08:30', '10:00', '11:30', '14:00', '15:30', '17:00'],
+    next: 'Next',
+    back: 'Back',
+    summary: 'Your visit',
+    pick: 'Not chosen yet',
+    confirm: 'Confirm my visit',
+    confirmNote: 'We’ll phone you the day before to remind you.',
+    pricesTitle: 'Clear prices',
+    pricesNote: 'You always get a written quote before any treatment.',
+    prices: [
+      ['First check-up & advice', 'Free'],
+      ['Cleaning & polishing', '18 000 Ft'],
+      ['Filling (white)', 'from 22 000 Ft'],
+      ['Tooth removal', 'from 15 000 Ft'],
+      ['Full denture', 'from 120 000 Ft'],
+      ['Implant with crown', 'from 290 000 Ft'],
+    ],
+    teamTitle: 'People who take their time',
+    team: [
+      ['KA', 'Dr Anna Kiss', 'Family dentist'],
+      ['VP', 'Dr Péter Varga', 'Implants & dentures'],
+      ['MZ', 'Zsófi Molnár', 'Dental hygienist'],
+    ],
+    roomAlt: 'A clean, bright treatment room with a dental chair and a window',
+    smileAlt: 'Close-up of a woman laughing with a healthy smile',
+    smileLine: 'Nervous about the dentist? Tell us. We’ll go at your pace.',
+    visitTitle: 'Find us',
+    address: ['Rózsa utca 14., 1st floor', 'Lift in the building · Free parking in the courtyard'],
+    directions: 'Directions',
+    actions: ['Book', 'Call', 'Map'],
+    footer: ['Mosoly Dental is a made-up business. This sample website was designed and built by', 'Photos: Unsplash.'],
+  },
+  hu: {
+    title: 'Mosoly Fogászat (Mojtaba Maleki mintaoldala)',
+    description: 'Mintaoldal egy kitalált családi fogászatnak egyszerű online időpontfoglalással. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'fogászati rendelő',
+    emergency: 'Fáj a foga? A sürgős eseteket még aznap fogadjuk.',
+    callNow: 'Hívás most',
+    nav: ['Kezelések', 'Árak', 'Elérhetőség'],
+    book: 'Időpontot kérek',
+    h1: ['Kíméletes fogászat', 'az egész családnak.'],
+    lede: 'Kapkodás, kioktatás és meglepetés a számlán nélkül.',
+    seePrices: 'Árak',
+    heroAlt: 'Mosolygó fogorvos beszélget egy nyugodt pácienssel egy világos rendelőben',
+    trust: ['Ingyenes első vizsgálat', 'Fájdalommentes érzéstelenítés', 'Akadálymentes bejárat'],
+    bookTitle: 'Foglaljon három egyszerű lépésben',
+    stepOf: (a: number, b: number) => `${a}. lépés / ${b}`,
+    q: ['Mire van szüksége?', 'Melyik nap megfelelő?', 'Hány órára?'],
+    reasons: [
+      { id: 'check', icon: 'search', label: 'Átvizsgálás' },
+      { id: 'pain', icon: 'alert', label: 'Fogfájás' },
+      { id: 'clean', icon: 'spark', label: 'Fogkőeltávolítás' },
+      { id: 'teeth', icon: 'tooth', label: 'Fogsor vagy implantátum' },
+    ],
+    weekdays: ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek'],
+    times: ['08:30', '10:00', '11:30', '14:00', '15:30', '17:00'],
+    next: 'Tovább',
+    back: 'Vissza',
+    summary: 'Az Ön időpontja',
+    pick: 'Még nincs kiválasztva',
+    confirm: 'Időpont megerősítése',
+    confirmNote: 'Előtte nap telefonon emlékeztetjük.',
+    pricesTitle: 'Átlátható árak',
+    pricesNote: 'Minden kezelés előtt írásos árajánlatot kap.',
+    prices: [
+      ['Első vizsgálat és tanácsadás', 'Ingyenes'],
+      ['Fogkőeltávolítás és polírozás', '18 000 Ft'],
+      ['Tömés (fehér)', '22 000 Ft-tól'],
+      ['Foghúzás', '15 000 Ft-tól'],
+      ['Teljes fogsor', '120 000 Ft-tól'],
+      ['Implantátum koronával', '290 000 Ft-tól'],
+    ],
+    teamTitle: 'Akik időt szánnak Önre',
+    team: [
+      ['KA', 'Dr. Kiss Anna', 'Családi fogorvos'],
+      ['VP', 'Dr. Varga Péter', 'Implantátum és fogsor'],
+      ['MZ', 'Molnár Zsófi', 'Dentálhigiénikus'],
+    ],
+    roomAlt: 'Tiszta, világos kezelő fogorvosi székkel és ablakkal',
+    smileAlt: 'Közeli kép egy nevető nőről, egészséges mosollyal',
+    smileLine: 'Tart a fogorvostól? Mondja el nekünk. Az Ön tempójában haladunk.',
+    visitTitle: 'Itt talál minket',
+    address: ['Rózsa utca 14., 1. emelet', 'Lift a házban · Ingyenes parkolás az udvarban'],
+    directions: 'Útvonal',
+    actions: ['Foglalás', 'Hívás', 'Térkép'],
+    footer: ['A Mosoly Fogászat kitalált vállalkozás. Ezt a mintaoldalt tervezte és készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#ffffff">
+  <ConceptBar business={lang === 'hu' ? 'Mosoly Fogászat' : 'Mosoly Dental'} />
+
+  <div class="ms">
+    <p class="emergency">
+      <span>{copy.emergency}</span>
+      <button type="button" data-preview-kind="call"><Icon name="phone" />{copy.callNow}</button>
+    </p>
+
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Mosoly">
+          <span class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><path d="M11 9c3-2 6-1 9 1 3-2 6-3 9-1 4 3 3 10 1 15-1 3-1 7-3 8-2 1-3-3-4-6-1-2-2-3-3-3s-2 1-3 3c-1 3-2 7-4 6-2-1-2-5-3-8-2-5-3-12 1-15z" fill="currentColor"></path><path d="M14 17c2 2 4 3 6 3s4-1 6-3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></path></svg>
+          </span>
+          <span>mosoly<small>{copy.tagline}</small></span>
+        </a>
+        <nav class="nav" aria-label="Mosoly">
+          <a href="#book">{copy.book}</a>
+          <a href="#prices">{copy.nav[1]}</a>
+          <a href="#visit">{copy.nav[2]}</a>
+        </nav>
+        <div class="tools">
+          <TextSize class="ts-ms" />
+          <a href="#book" class="btn btn-small">{copy.book}</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <OpenHours hours={hours} variant="badge" />
+            <h1>{copy.h1[0]} <span>{copy.h1[1]}</span></h1>
+            <p class="lede">{copy.lede}</p>
+            <div class="actions">
+              <a href="#book" class="btn"><Icon name="calendar" />{copy.book}</a>
+              <a href="#prices" class="btn btn-soft">{copy.seePrices}</a>
+            </div>
+            <ul class="trust">
+              {copy.trust.map((t) => <li><Icon name="check" />{t}</li>)}
+            </ul>
+          </div>
+          <div class="hero-media">
+            <Picture src={hero} alt={copy.heroAlt} formats={['avif', 'webp']} quality={68} widths={[400, 640, 900, 1200]} sizes="(min-width: 60rem) 46vw, 92vw" loading="eager" fetchpriority="high" />
+          </div>
+        </div>
+      </section>
+
+      <section id="book" class="book" aria-labelledby="book-title">
+        <div class="wrap">
+          <h2 id="book-title">{copy.bookTitle}</h2>
+          <div class="book-grid">
+            <form class="wizard" data-wizard onsubmit="return false" data-step-labels={JSON.stringify([1, 2, 3].map((n) => copy.stepOf(n, 3)))}>
+              <div class="progress" aria-hidden="true" hidden data-progress>
+                <span class="progress-text"></span>
+                <span class="progress-bar"><i></i></span>
+              </div>
+
+              <fieldset class="step" data-step="0">
+                <legend>{copy.q[0]}</legend>
+                <div class="tiles">
+                  {
+                    copy.reasons.map((r) => (
+                      <label class="tile">
+                        <input type="radio" name="reason" value={r.label} />
+                        <span class="tile-body">
+                          <span class="tile-icon" aria-hidden="true">
+                            {r.icon === 'search' && <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>}
+                            {r.icon === 'alert' && <svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3L12 3.5Z" /><path d="M12 10v4.5M12 17v.3" /></svg>}
+                            {r.icon === 'spark' && <svg viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3" /></svg>}
+                            {r.icon === 'tooth' && <svg viewBox="0 0 24 24"><path d="M7 4c2-1 3.5-.5 5 .5 1.5-1 3-1.5 5-.5 2.5 1.5 2 6 .8 9-.6 1.8-.6 4.5-1.8 5-1.2.5-1.8-2-2.4-3.6-.4-1-1-1.5-1.6-1.5s-1.2.5-1.6 1.5C10.8 16 10.2 18.5 9 18c-1.2-.5-1.2-3.2-1.8-5C6 10 5.5 5.5 7 4Z" /></svg>}
+                          </span>
+                          {r.label}
+                        </span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+
+              <fieldset class="step" data-step="1">
+                <legend>{copy.q[1]}</legend>
+                <div class="tiles tiles-days" data-days>
+                  {
+                    copy.weekdays.map((d, i) => (
+                      <label class="tile tile-day">
+                        <input type="radio" name="day" value={d} data-offset={i} />
+                        <span class="tile-body"><span class="day-label">{d}</span></span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+
+              <fieldset class="step" data-step="2">
+                <legend>{copy.q[2]}</legend>
+                <div class="tiles tiles-times">
+                  {
+                    copy.times.map((tm) => (
+                      <label class="tile tile-time">
+                        <input type="radio" name="time" value={tm} />
+                        <span class="tile-body">{tm}</span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+
+              <div class="wiz-nav" hidden data-wiz-nav>
+                <button type="button" class="btn btn-soft" data-back><Icon name="arrow-l" />{copy.back}</button>
+                <button type="button" class="btn" data-next disabled>{copy.next}<Icon name="arrow-r" /></button>
+              </div>
+            </form>
+
+            <aside class="summary" aria-live="polite">
+              <h3>{copy.summary}</h3>
+              <dl>
+                <div><dt><Icon name="check" /></dt><dd data-sum="reason">{copy.pick}</dd></div>
+                <div><dt><Icon name="calendar" /></dt><dd data-sum="day">{copy.pick}</dd></div>
+                <div><dt><Icon name="clock" /></dt><dd data-sum="time">{copy.pick}</dd></div>
+              </dl>
+              <button type="button" class="btn btn-wide" data-confirm data-preview-kind="book" disabled>{copy.confirm}</button>
+              <p class="small">{copy.confirmNote}</p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="prices" class="prices" aria-labelledby="prices-title">
+        <div class="wrap prices-grid">
+          <div>
+            <h2 id="prices-title">{copy.pricesTitle}</h2>
+            <p class="note">{copy.pricesNote}</p>
+            <Picture src={smile} alt={copy.smileAlt} formats={['avif', 'webp']} quality={66} widths={[400, 640, 900]} sizes="(min-width: 60rem) 36vw, 92vw" class="smile" />
+            <p class="smile-line">{copy.smileLine}</p>
+          </div>
+          <table class="price-table">
+            <tbody>
+              {
+                copy.prices.map(([n, p]) => (
+                  <tr>
+                    <th scope="row">{n}</th>
+                    <td>{p}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="team" aria-labelledby="team-title">
+        <div class="wrap team-grid">
+          <Picture src={room} alt={copy.roomAlt} formats={['avif', 'webp']} quality={66} widths={[400, 640, 900, 1200]} sizes="(min-width: 60rem) 48vw, 92vw" class="room" />
+          <div>
+            <h2 id="team-title">{copy.teamTitle}</h2>
+            <ul>
+              {
+                copy.team.map(([ini, n, role]) => (
+                  <li>
+                    <span class="ini" aria-hidden="true">{ini}</span>
+                    <span><strong>{n}</strong>{role}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="visit" class="visit" aria-labelledby="visit-title">
+        <div class="wrap visit-grid">
+          <div>
+            <h2 id="visit-title">{copy.visitTitle}</h2>
+            <address><strong>{copy.address[0]}</strong>{copy.address[1]}</address>
+            <div class="actions">
+              <button type="button" class="btn" data-preview-kind="call"><Icon name="phone" />{copy.callNow}</button>
+              <button type="button" class="btn btn-soft" data-preview-kind="map"><Icon name="map" />{copy.directions}</button>
+            </div>
+          </div>
+          <div class="hours-card"><OpenHours hours={hours} /></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo-text">mosoly</p>
+      <p>{copy.footer[0]}{' '}<a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}</p>
+    </footer>
+  </div>
+
+  <ActionBar
+    bg="#ffffff"
+    fg="#0b3f43"
+    primaryBg="#0b5257"
+    primaryFg="#ffffff"
+    actions={[
+      { icon: 'calendar', label: copy.actions[0], href: '#book' },
+      { icon: 'phone', label: copy.actions[1], preview: 'call' },
+      { icon: 'map', label: copy.actions[2], preview: 'map' },
+    ]}
+  />
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-wizard]');
+  if (form) {
+    const lang = document.documentElement.lang || 'en';
+    // Show real dates for the next five working days.
+    const dayInputs = [...form.querySelectorAll<HTMLInputElement>('input[name=day]')];
+    const fmt = new Intl.DateTimeFormat(lang === 'hu' ? 'hu-HU' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    const d = new Date();
+    dayInputs.forEach((input) => {
+      do d.setDate(d.getDate() + 1);
+      while (d.getDay() === 0 || d.getDay() === 6);
+      const label = fmt.format(d);
+      input.value = label;
+      input.parentElement!.querySelector('.day-label')!.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+    });
+
+    // One question at a time.
+    const steps = [...form.querySelectorAll<HTMLElement>('[data-step]')];
+    const nav = form.querySelector<HTMLElement>('[data-wiz-nav]')!;
+    const next = form.querySelector<HTMLButtonElement>('[data-next]')!;
+    const back = form.querySelector<HTMLButtonElement>('[data-back]')!;
+    const progress = form.querySelector<HTMLElement>('[data-progress]')!;
+    const labels: string[] = JSON.parse(form.dataset.stepLabels!);
+    const confirm = document.querySelector<HTMLButtonElement>('[data-confirm]')!;
+    const names = ['reason', 'day', 'time'];
+    let current = 0;
+    const chosen = (i: number) => !!form.querySelector(`input[name=${names[i]}]:checked`);
+    const render = () => {
+      steps.forEach((s, i) => (s.hidden = i !== current));
+      progress.querySelector('.progress-text')!.textContent = labels[current];
+      progress.style.setProperty('--p', String((current + 1) / steps.length));
+      back.hidden = current === 0;
+      next.hidden = current === steps.length - 1;
+      next.disabled = !chosen(current);
+    };
+    form.classList.add('is-wizard');
+    progress.hidden = false;
+    nav.hidden = false;
+    next.addEventListener('click', () => {
+      if (current < steps.length - 1 && chosen(current)) current++;
+      render();
+      steps[current].querySelector<HTMLElement>('legend')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+    back.addEventListener('click', () => {
+      if (current > 0) current--;
+      render();
+    });
+    form.addEventListener('change', (e) => {
+      const input = e.target as HTMLInputElement;
+      const out = document.querySelector(`[data-sum="${input.name}"]`);
+      if (out) {
+        out.textContent = input.value;
+        out.classList.add('set');
+      }
+      confirm.disabled = !names.every((_, i) => chosen(i));
+      render();
+    });
+    render();
+  }
+</script>
+
+<style>
+  .ms {
+    --teal: #0b5257;
+    --teal-2: #0f6e73;
+    --mint: #e3f3f0;
+    --sky: #f3f9f8;
+    --ink: #0f2426;
+    --text: #344a4d;
+    --coral: #e8664a;
+    --rule: #d5e4e2;
+    background: #fff;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .wrap {
+    width: min(100% - 2.5rem, 72rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--ink);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+  h2 {
+    font-size: clamp(2rem, 1.5rem + 2.2vw, 3.1rem);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.5rem;
+    padding: 0.8rem 1.5rem;
+    border: 0;
+    border-radius: 0.9rem;
+    background: var(--teal);
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--teal-2);
+  }
+  .btn:disabled {
+    background: #b8cccb;
+    cursor: not-allowed;
+  }
+  .btn :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2.2;
+  }
+  .btn-soft {
+    background: var(--mint);
+    color: var(--teal);
+  }
+  .btn-soft:hover:not(:disabled) {
+    background: #cfeae5;
+  }
+  .btn-small {
+    min-height: 2.9rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 1rem;
+  }
+  .btn-wide {
+    width: 100%;
+  }
+  .ms :focus-visible {
+    outline: 3px solid var(--coral);
+    outline-offset: 3px;
+  }
+
+  .emergency {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem 1rem;
+    padding: 0.6rem 1rem;
+    background: var(--teal);
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+  }
+  .emergency button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.6rem;
+    padding: 0.3rem 1rem;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .emergency button :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(255 255 255 / 0.96);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .logo small {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--teal-2);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .logo-mark {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.8rem;
+    background: var(--teal);
+    color: #fff;
+  }
+  .logo-mark svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .nav {
+    display: none;
+    gap: 2rem;
+  }
+  .nav a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--teal-2);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .tools :global(.ts-ms) {
+    --ts-active-bg: var(--teal);
+    --ts-border: var(--rule);
+    --ts-fg: var(--ink);
+  }
+  @media (min-width: 62rem) {
+    .nav {
+      display: flex;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .tools .btn-small {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    padding-block: clamp(2rem, 5vw, 4.5rem);
+    background: linear-gradient(180deg, var(--sky), #fff);
+  }
+  .hero-grid {
+    display: grid;
+    gap: 2.25rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .hero-grid {
+      grid-template-columns: 1fr 1.05fr;
+      gap: 4rem;
+    }
+  }
+  .hero h1 {
+    margin-top: 1rem;
+    font-size: clamp(2.5rem, 1.4rem + 4.5vw, 4.6rem);
+  }
+  .hero h1 span {
+    color: var(--teal-2);
+  }
+  .lede {
+    max-width: 28rem;
+    margin-top: 1.1rem;
+    color: var(--ink);
+    font-size: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  @media (max-width: 30rem) {
+    .actions .btn {
+      width: 100%;
+    }
+  }
+  .trust {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+    padding: 0;
+    list-style: none;
+  }
+  .trust li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .trust :global(svg) {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.2rem;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--teal);
+    stroke-width: 2.6;
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3.3;
+    object-fit: cover;
+    border-radius: 2rem;
+    box-shadow: 0 30px 60px -30px rgb(11 82 87 / 0.45);
+  }
+
+  /* Booking */
+  .book {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--sky);
+    border-block: 1px solid var(--rule);
+  }
+  .book-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 60rem) {
+    .book-grid {
+      grid-template-columns: 1.6fr 1fr;
+      align-items: start;
+    }
+  }
+  .wizard {
+    padding: clamp(1.25rem, 4vw, 2.25rem);
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 0 0 1px var(--rule), 0 20px 40px -30px rgb(11 82 87 / 0.4);
+  }
+  .progress {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .progress[hidden] {
+    display: none;
+  }
+  .progress-text {
+    color: var(--teal-2);
+    font-weight: 800;
+  }
+  .progress-bar {
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--mint);
+    overflow: hidden;
+  }
+  .progress-bar i {
+    display: block;
+    height: 100%;
+    width: calc(var(--p, 0.33) * 100%);
+    border-radius: inherit;
+    background: var(--teal);
+    transition: width 0.3s ease;
+  }
+  .step {
+    min-width: 0;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    border: 0;
+  }
+  .step[hidden] {
+    display: none;
+  }
+  .is-wizard .step {
+    margin-bottom: 0;
+  }
+  legend {
+    margin-bottom: 1rem;
+    color: var(--ink);
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .tiles-days {
+    grid-template-columns: 1fr;
+  }
+  .tiles-times {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (min-width: 40rem) {
+    .tiles-days {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .tile {
+    position: relative;
+  }
+  .tile input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .tile-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 4rem;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    border: 2px solid var(--rule);
+    border-radius: 1rem;
+    background: #fff;
+    color: var(--ink);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .tile-day .tile-body,
+  .tile-time .tile-body {
+    flex-direction: row;
+    min-height: 3.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .tile-icon svg {
+    width: 2.25rem;
+    height: 2.25rem;
+    fill: none;
+    stroke: var(--teal);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tile input:hover + .tile-body {
+    border-color: var(--teal-2);
+  }
+  .tile input:checked + .tile-body {
+    border-color: var(--teal);
+    background: var(--mint);
+    box-shadow: inset 0 0 0 1px var(--teal);
+  }
+  .tile input:focus-visible + .tile-body {
+    outline: 3px solid var(--coral);
+    outline-offset: 2px;
+  }
+  .wiz-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .wiz-nav[hidden] {
+    display: none;
+  }
+  .wiz-nav [data-next] {
+    margin-left: auto;
+  }
+  .wiz-nav [hidden] {
+    display: none;
+  }
+  .summary {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: var(--teal);
+    color: #d8eeec;
+  }
+  .summary h3 {
+    color: #fff;
+    font-size: 1.5rem;
+  }
+  .summary dl {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 1.25rem;
+  }
+  .summary dl div {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .summary dt :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 2.2;
+  }
+  .summary dd {
+    font-weight: 600;
+  }
+  .summary dd.set {
+    color: #fff;
+    font-weight: 800;
+  }
+  .summary .btn {
+    background: #fff;
+    color: var(--teal);
+  }
+  .summary .btn:disabled {
+    background: rgb(255 255 255 / 0.35);
+    color: rgb(255 255 255 / 0.85);
+  }
+  .small {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  /* Prices */
+  .prices {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .prices-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 60rem) {
+    .prices-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+  .note {
+    margin-top: 0.75rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .prices :global(.smile) {
+    display: none;
+  }
+  @media (min-width: 60rem) {
+    .prices :global(.smile) {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      margin-top: 2rem;
+      object-fit: cover;
+      border-radius: 1.5rem;
+    }
+  }
+  .smile-line {
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    background: var(--mint);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .price-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .price-table th,
+  .price-table td {
+    padding: 1.05rem 0.25rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    vertical-align: top;
+  }
+  .price-table th {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .price-table td {
+    color: var(--teal);
+    font-weight: 800;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* Team */
+  .team {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    background: var(--sky);
+  }
+  .team-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .team-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .team :global(.room) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 1.5rem;
+  }
+  .team ul {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .team li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .team li strong {
+    display: block;
+    color: var(--ink);
+    font-size: 1.2rem;
+  }
+  .ini {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-weight: 800;
+  }
+
+  /* Visit */
+  .visit {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .visit-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 56rem) {
+    .visit-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+  address {
+    display: grid;
+    margin-top: 1.25rem;
+    font-style: normal;
+  }
+  address strong {
+    color: var(--ink);
+    font-size: 1.4rem;
+  }
+  .hours-card {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: var(--sky);
+    box-shadow: 0 0 0 1px var(--rule);
+    --oh-today-bg: var(--mint);
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2rem 2.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.95rem;
+  }
+  .logo-text {
+    color: var(--ink);
+    font-size: 1.3rem;
+    font-weight: 800;
+  }
+  .foot a {
+    color: var(--ink);
+    font-weight: 800;
+  }
+</style>

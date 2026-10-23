@@ -1,0 +1,81 @@
+---
+// A visible "A / A+" switch. Older visitors often can't find browser zoom; this makes text bigger in one tap.
+import { getLang } from '../../i18n';
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const hu = getLang(Astro.url) === 'hu';
+---
+
+<div class:list={['ts', className]} role="group" aria-label={hu ? 'Betűméret' : 'Text size'} data-textsize hidden>
+  <button type="button" data-size="100" aria-pressed="true">A<span class="visually-hidden">{hu ? ' – normál betű' : ' – normal text'}</span></button>
+  <button type="button" data-size="120" aria-pressed="false" class="big">A+<span class="visually-hidden">{hu ? ' – nagyobb betű' : ' – larger text'}</span></button>
+</div>
+
+<script>
+  const KEY = 'concept-text-size';
+  const apply = (size: string) => {
+    document.documentElement.style.fontSize = size === '100' ? '' : `${size}%`;
+    document.querySelectorAll<HTMLButtonElement>('[data-textsize] button').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.size === size)),
+    );
+  };
+  let saved = '100';
+  try {
+    saved = localStorage.getItem(KEY) ?? '100';
+  } catch {}
+  apply(saved);
+  document.querySelectorAll<HTMLElement>('[data-textsize]').forEach((g) => {
+    g.hidden = false;
+    g.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-size]');
+      if (!b) return;
+      apply(b.dataset.size!);
+      try {
+        localStorage.setItem(KEY, b.dataset.size!);
+      } catch {}
+    });
+  });
+</script>
+
+<style>
+  .ts {
+    display: inline-flex;
+    padding: 3px;
+    border: 2px solid var(--ts-border, rgb(0 0 0 / 0.2));
+    border-radius: 999px;
+  }
+  .ts[hidden] {
+    display: none;
+  }
+  .ts button {
+    min-width: 2.6rem;
+    min-height: 2.6rem;
+    padding: 0 0.6rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ts-fg, currentColor);
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    cursor: pointer;
+  }
+  .ts button.big {
+    font-size: 1.25rem;
+  }
+  .ts button[aria-pressed='true'] {
+    background: var(--ts-active-bg, #111);
+    color: var(--ts-active-fg, #fff);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

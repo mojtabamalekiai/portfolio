@@ -68,3 +68,15 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Long words (common in Hungarian) must never push the page wider than a small phone. */
+h1,
+h2,
+h3,
+legend {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+:where([class*='-grid'], [class*='-inner']) > * {
+  min-width: 0;
+}

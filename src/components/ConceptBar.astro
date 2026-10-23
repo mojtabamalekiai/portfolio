@@ -11,108 +11,110 @@ const t =
   lang === 'hu'
     ? {
         label: 'Erről az oldalról',
-        concept: 'Koncepció',
-        text: `A ${business} kitalált vállalkozás. A weboldalt Mojtaba Maleki tervezte és készítette.`,
-        nav: 'Koncepció navigáció',
-        back: 'Vissza a munkákhoz',
+        back: 'Vissza',
+        note: `Mintaoldal · a ${business} kitalált vállalkozás`,
         cta: 'Ilyet szeretnék',
       }
     : {
         label: 'About this page',
-        concept: 'Design concept',
-        text: `${business} is a fictional business. Website designed & built by Mojtaba Maleki.`,
-        nav: 'Concept navigation',
-        back: 'Back to all work',
-        cta: 'Get a site like this',
+        back: 'Back',
+        note: `Sample website · ${business} is a made-up business`,
+        cta: 'I want one like this',
       };
 ---
 
 <aside class="concept-bar" aria-label={t.label}>
-  <p>
-    <strong>{t.concept}</strong>
-    <span class="sep" aria-hidden="true">·</span>
-    <span>{t.text}</span>
-  </p>
-  <nav class="actions" aria-label={t.nav}>
-    <a href={localePath(lang, '/#work')}>
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.6"></path></svg>
-      {t.back}
-    </a>
-    <LangSwitch tone="dark" />
+  <a href={localePath(lang, '/#work')} class="back">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg>
+    {t.back}
+  </a>
+  <p class="note">{t.note}</p>
+  <div class="right">
     <a href={localePath(lang, '/#contact')} class="cta">{t.cta}</a>
-  </nav>
+    <LangSwitch tone="dark" />
+  </div>
 </aside>
 
 <style>
   .concept-bar {
     position: relative;
     z-index: 60;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem 1.5rem;
-    padding: 0.55rem clamp(1rem, 3vw, 2rem);
+    gap: 0.5rem 1rem;
+    padding: 0.45rem clamp(0.75rem, 3vw, 2rem);
     background: #15161a;
     color: #e9e5dc;
-    font: 500 0.8125rem/1.4 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font: 500 0.9375rem/1.3 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
-  .concept-bar strong {
-    color: #fff;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-size: 0.72rem;
-  }
-  .sep {
-    margin-inline: 0.4em;
-    opacity: 0.5;
-  }
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    align-items: center;
-  }
-  .actions > a {
+  .back {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    min-height: 2rem;
-    text-decoration: none;
-    color: #e9e5dc;
-  }
-  .actions > a:hover {
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    padding: 0 0.9rem 0 0.6rem;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: 999px;
     color: #fff;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    font-weight: 700;
+    text-decoration: none;
   }
-  .actions svg {
-    width: 0.9rem;
-    height: 0.9rem;
+  .back:hover {
+    background: rgb(255 255 255 / 0.1);
   }
-  .actions .cta {
-    padding: 0.2rem 0.8rem;
+  .back svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .note {
+    color: #cfcac0;
+    min-width: 0;
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
     border-radius: 999px;
     background: #2443db;
     color: #fff;
-    font-weight: 600;
-  }
-  .actions .cta:hover {
-    background: #1a32ad;
+    font-weight: 700;
     text-decoration: none;
+    white-space: nowrap;
+  }
+  .cta:hover {
+    background: #1a32ad;
   }
   .concept-bar :focus-visible {
     outline: 2px solid #8fa2ff;
     outline-offset: 2px;
-    border-radius: 4px;
   }
-  @media (max-width: 40rem) {
-    .concept-bar p > span:last-child {
-      display: block;
-      color: #bdb9b0;
+  @media (max-width: 47.99rem) {
+    .concept-bar {
+      grid-template-columns: auto 1fr;
     }
-    .sep {
+    .note {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      font-size: 0.875rem;
+      padding-bottom: 0.15rem;
+    }
+    .right {
+      justify-self: end;
+    }
+    .cta {
+      padding: 0 0.85rem;
+      font-size: 0.9375rem;
+    }
+  }
+  @media (max-width: 22rem) {
+    .cta {
       display: none;
     }
   }

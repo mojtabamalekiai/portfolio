@@ -1,0 +1,195 @@
+---
+// Phone-only bottom bar with the 2–3 things a customer most wants to do.
+// Pattern: always-visible, labelled, thumb-reachable actions (no hidden menus).
+// "preview" actions would call / open maps on a real site; in a concept they explain that instead.
+import Icon, { type IconName } from '../Icon.astro';
+import { getLang } from '../../i18n';
+
+export interface Action {
+  icon: IconName;
+  label: string;
+  /** In-page anchor (e.g. '#menu'). Omit for preview-only actions. */
+  href?: string;
+  preview?: 'call' | 'map' | 'message' | 'book' | 'order';
+}
+interface Props {
+  actions: Action[];
+  /** Colours: bar background, text, and the first (main) button. */
+  bg?: string;
+  fg?: string;
+  primaryBg?: string;
+  primaryFg?: string;
+}
+const { actions, bg = '#ffffff', fg = '#111111', primaryBg = '#111111', primaryFg = '#ffffff' } = Astro.props;
+const lang = getLang(Astro.url);
+const previews = {
+  en: {
+    call: 'Sample website: on a real site, this button phones the business.',
+    map: 'Sample website: on a real site, this opens the map with directions.',
+    message: 'Sample website: on a real site, this opens a chat with the business.',
+    book: 'Sample website: on a real site, this opens the booking form.',
+    order: 'Sample website: on a real site, this sends your order.',
+  },
+  hu: {
+    call: 'Mintaoldal: egy valódi oldalon ez a gomb felhívja a vállalkozást.',
+    map: 'Mintaoldal: egy valódi oldalon ez megnyitja a térképet útvonallal.',
+    message: 'Mintaoldal: egy valódi oldalon ez üzenetet nyit a vállalkozásnak.',
+    book: 'Mintaoldal: egy valódi oldalon ez megnyitja a foglalást.',
+    order: 'Mintaoldal: egy valódi oldalon ez elküldi a rendelésedet.',
+  },
+}[lang];
+---
+
+<nav
+  class="cbar"
+  aria-label={lang === 'hu' ? 'Gyors műveletek' : 'Quick actions'}
+  style={`--ab-bg:${bg};--ab-fg:${fg};--ab-pbg:${primaryBg};--ab-pfg:${primaryFg}`}
+>
+  {
+    actions.map((a, i) =>
+      a.href ? (
+        <a href={a.href} class:list={['cbar-btn', { main: i === 0 }]}>
+          <Icon name={a.icon} />
+          <span>{a.label}</span>
+        </a>
+      ) : (
+        <button type="button" class:list={['cbar-btn', { main: i === 0 }]} data-preview={a.preview ? previews[a.preview] : ''}>
+          <Icon name={a.icon} />
+          <span>{a.label}</span>
+        </button>
+      ),
+    )
+  }
+</nav>
+<p class="cbar-toast" role="status" aria-live="polite" data-msgs={JSON.stringify(previews)}></p>
+
+<script>
+  const toast = document.querySelector<HTMLElement>('.cbar-toast');
+  let timer = 0;
+  const show = (text: string) => {
+    if (!toast || !text) return;
+    toast.textContent = text;
+    toast.classList.add('on');
+    clearTimeout(timer);
+    timer = window.setTimeout(() => toast.classList.remove('on'), 4200);
+  };
+  const msgs: Record<string, string> = JSON.parse(toast?.dataset.msgs ?? '{}');
+  // Any element on a concept page can reuse this:
+  //   <button data-preview="custom text"> or <button data-preview-kind="call|map|message|book|order">.
+  document.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-preview], [data-preview-kind]');
+    if (!el) return;
+    const text = el.dataset.preview || msgs[el.dataset.previewKind ?? ''];
+    if (text) {
+      e.preventDefault();
+      show(text);
+    }
+  });
+</script>
+
+<style>
+  .cbar {
+    display: none;
+  }
+  @media (max-width: 47.99rem) {
+    .cbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 55;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.6rem 0.75rem calc(0.6rem + env(safe-area-inset-bottom));
+      background: var(--ab-bg);
+      box-shadow: 0 -1px 0 rgb(0 0 0 / 0.08), 0 -10px 30px -12px rgb(0 0 0 / 0.25);
+    }
+    :global(body) {
+      padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+    }
+  }
+  .cbar-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 3.4rem;
+    padding: 0.5rem 0.6rem;
+    border: 2px solid color-mix(in srgb, var(--ab-fg) 22%, transparent);
+    border-radius: 0.9rem;
+    background: transparent;
+    color: var(--ab-fg);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.1;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .cbar-btn.main {
+    border-color: var(--ab-pbg);
+    background: var(--ab-pbg);
+    color: var(--ab-pfg);
+  }
+  .cbar-btn :global(svg) {
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+    stroke-width: 2;
+  }
+  .cbar-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Narrow phones: icon above the label, like an app tab bar, so labels never get cut. */
+  @media (max-width: 26rem) {
+    .cbar {
+      gap: 0.4rem;
+      padding-inline: 0.5rem;
+    }
+    .cbar-btn {
+      flex-direction: column;
+      gap: 0.2rem;
+      min-height: 3.6rem;
+      padding: 0.35rem 0.25rem;
+      font-size: 0.9rem;
+    }
+  }
+  .cbar-btn:focus-visible {
+    outline: 3px solid var(--ab-pbg);
+    outline-offset: 2px;
+  }
+  .cbar-toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(6rem + env(safe-area-inset-bottom));
+    z-index: 70;
+    width: min(26rem, calc(100vw - 2rem));
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    background: #15161a;
+    color: #fff;
+    font: 600 1rem/1.4 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    text-align: center;
+    box-shadow: 0 20px 40px -16px rgb(0 0 0 / 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  @media (min-width: 48rem) {
+    .cbar-toast {
+      bottom: 2rem;
+    }
+  }
+  .cbar-toast:empty {
+    visibility: hidden;
+  }
+  .cbar-toast.on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>

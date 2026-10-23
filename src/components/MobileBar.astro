@@ -1,0 +1,70 @@
+---
+// Phone-only bar fixed to the bottom of the screen: the two ways to reach Moji, always one tap away.
+// The page reserves space for it, so it never covers text.
+import { site, external, mailtoHref } from '../data/site';
+import { getLang } from '../i18n';
+import { ui } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+const t = ui[getLang(Astro.url)];
+---
+
+<nav class="mbar" aria-label={t.contact.eyebrow}>
+  <a href={site.facebook} class="mbar-btn main" {...external}>
+    <Icon name="messenger" />
+    <span>{t.bar.message}</span>
+    <span class="visually-hidden">{t.newTab}</span>
+  </a>
+  <a href={mailtoHref(t.contact.subject)} class="mbar-btn">
+    <Icon name="mail" />
+    <span>{t.bar.email}</span>
+  </a>
+</nav>
+
+<style>
+  .mbar {
+    display: none;
+  }
+  @media (max-width: 63.99rem) {
+    .mbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 45;
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.65rem var(--gutter) calc(0.65rem + env(safe-area-inset-bottom));
+      background: var(--paper);
+      box-shadow: 0 -1px 0 var(--line), 0 -12px 30px -16px rgb(21 22 26 / 0.35);
+    }
+    :global(body) {
+      padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+    }
+  }
+  .mbar-btn {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.6rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .mbar-btn.main {
+    flex-grow: 1.5;
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .mbar-btn :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke-width: 2;
+  }
+</style>

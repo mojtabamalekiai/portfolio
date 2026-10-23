@@ -6,6 +6,7 @@ import '../styles/concept-base.css';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
 import { getLang, localePath } from '../i18n';
 import living from '../assets/photos/kova-living.jpg';
 import kitchen from '../assets/photos/kova-kitchen.jpg';
@@ -197,6 +198,7 @@ const images = { kitchen, bedroom, dining, boho };
       </p>
     </footer>
   </div>
+  <ActionBar bg="#f3f1ec" fg="#1d1c1a" primaryBg="#1d1c1a" primaryFg="#faf9f6" actions={[{ icon: 'mail', label: lang === 'hu' ? 'Kapcsolat' : 'Contact', href: '#contact' }, { icon: 'phone', label: lang === 'hu' ? 'Hívás' : 'Call', preview: 'call' }, { icon: 'portfolio', label: lang === 'hu' ? 'Munkák' : 'Work', href: '#work' }]} />
 </Base>
 
 <script>
@@ -218,7 +220,7 @@ const images = { kitchen, bedroom, dining, boho };
     background: var(--bone);
     color: var(--stone);
     font-family: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
   .wrap {
     width: min(100% - clamp(2.5rem, 6vw, 6rem), 82rem);

@@ -5,11 +5,14 @@ import '../styles/concept-base.css';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
+import OpenHours from '../components/concept/OpenHours.astro';
 import { getLang, localePath } from '../i18n';
 import chair from '../assets/photos/north-chair.jpg';
 import cut from '../assets/photos/north-cut.jpg';
 
 const lang = getLang(Astro.url);
+const openHours: ([string, string] | null)[] = [null, ['09:00','19:00'], ['09:00','19:00'], ['09:00','19:00'], ['09:00','19:00'], ['09:00','16:00'], null];
 
 const copy = {
   en: {
@@ -128,6 +131,7 @@ const slots = ['10:00', '10:45', '11:30', '13:15', '14:00', '15:30', '16:15', '1
           class="hero-img"
         />
         <div class="wrap hero-inner">
+          <OpenHours hours={openHours} variant="badge" class="live-hours" />
           <p class="tag">{copy.tag}</p>
           <h1>{copy.h1[0]}<br /><span>{copy.h1[1]}</span></h1>
           <p class="lede">{copy.lede}</p>
@@ -247,6 +251,7 @@ const slots = ['10:00', '10:45', '11:30', '13:15', '14:00', '15:30', '16:15', '1
       </p>
     </footer>
   </div>
+  <ActionBar bg="#111110" fg="#ece5d8" primaryBg="#cfa75e" primaryFg="#111110" actions={[{ icon: 'calendar', label: lang === 'hu' ? 'Foglalás' : 'Book', href: '#book' }, { icon: 'phone', label: lang === 'hu' ? 'Hívás' : 'Call', preview: 'call' }, { icon: 'map', label: lang === 'hu' ? 'Térkép' : 'Map', preview: 'map' }]} />
 </Base>
 
 <script>
@@ -275,7 +280,7 @@ const slots = ['10:00', '10:45', '11:30', '13:15', '14:00', '15:30', '16:15', '1
     background: var(--coal);
     color: var(--ash);
     font-family: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
   .wrap {
     width: min(100% - clamp(2.5rem, 6vw, 5rem), 76rem);

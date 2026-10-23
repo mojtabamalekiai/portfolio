@@ -1,0 +1,884 @@
+---
+import '@fontsource/marcellus/400.css';
+import '@fontsource-variable/mulish';
+import '../styles/concept-base.css';
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ConceptBar from '../components/ConceptBar.astro';
+import ActionBar from '../components/concept/ActionBar.astro';
+import Icon from '../components/Icon.astro';
+import { getLang, localePath } from '../i18n';
+import hero from '../assets/photos/topart-hero.jpg';
+import dock from '../assets/photos/topart-dock.jpg';
+import pier from '../assets/photos/topart-pier.jpg';
+import twin from '../assets/photos/topart-twin.jpg';
+import attic from '../assets/photos/topart-attic.jpg';
+import bed from '../assets/photos/topart-bed.jpg';
+
+const lang = getLang(Astro.url);
+
+const copy = {
+  en: {
+    title: 'Tópart Guesthouse (sample website by Mojtaba Maleki)',
+    description: 'A sample website for a made-up lakeside guesthouse with a simple stay planner, designed and built by Mojtaba Maleki.',
+    tagline: 'lakeside guesthouse',
+    nav: ['Rooms', 'Plan your stay', 'Around us'],
+    ask: 'Ask about dates',
+    h1: 'Wake up by the lake.',
+    lede: 'Six cosy rooms, a private pier and home-made breakfast. Two minutes from the water.',
+    heroAlt: 'A wooden guesthouse on the shore of a calm mountain lake surrounded by autumn trees',
+    planTitle: 'Plan your stay',
+    guests: 'Guests',
+    nights: 'Nights',
+    room: 'Room',
+    less: 'Fewer',
+    more: 'More',
+    estimate: 'Your price',
+    breakfast: 'Breakfast included',
+    tooMany: (n: number) => `This room sleeps up to ${n}. Try the Attic family room.`,
+    askFree: 'Ask if it’s free',
+    perNight: 'per night',
+    sleeps: (n: number) => `Sleeps ${n}`,
+    chooseRoom: 'Choose this room',
+    roomsTitle: 'Our rooms',
+    rooms: [
+      { id: 'lake', name: 'Lake room', rate: 26000, cap: 2, note: 'Two beds, a lake view and morning sun.', img: 'twin', alt: 'A bright bedroom with two iron beds, wood panelling and large windows' },
+      { id: 'attic', name: 'Attic family room', rate: 34000, cap: 4, note: 'Room for the whole family under the roof.', img: 'attic', alt: 'A cosy attic bedroom with a sloped white ceiling, a window and soft cushions' },
+      { id: 'garden', name: 'Garden double', rate: 22000, cap: 2, note: 'Quiet, private, right next to the garden.', img: 'bed', alt: 'A neatly made double bed with white linen and a rope-base bedside lamp' },
+    ],
+    incTitle: 'Every stay includes',
+    inc: ['Home-made breakfast', 'Free parking', 'Wi-Fi', 'Bikes to borrow', 'Our own pier'],
+    nearTitle: 'Around us',
+    near: [
+      ['Beach', '2 min walk'],
+      ['Bakery', '5 min walk'],
+      ['Wine cellar', '10 min walk'],
+      ['Bus stop', '4 min walk'],
+      ['Village centre', '12 min walk'],
+    ],
+    dockAlt: 'Two wooden chairs on a lakeside dock in the sun',
+    pierAlt: 'A wooden pier stretching into a calm lake at sunset',
+    checkTitle: 'Good to know',
+    check: [
+      ['Check-in', 'from 14:00'],
+      ['Check-out', 'by 10:00'],
+      ['Pets', 'Welcome, just tell us'],
+    ],
+    address: ['Tópart sétány 18.', 'Free parking at the house'],
+    actions: ['Ask', 'Call', 'Map'],
+    footer: ['Tópart is a made-up business. This sample website was designed and built by', 'Photos: Unsplash.'],
+  },
+  hu: {
+    title: 'Tópart Vendégház (Mojtaba Maleki mintaoldala)',
+    description: 'Mintaoldal egy kitalált tóparti vendégháznak egyszerű foglalástervezővel. Tervezte és készítette: Mojtaba Maleki.',
+    tagline: 'tóparti vendégház',
+    nav: ['Szobák', 'Tervezd meg', 'A környék'],
+    ask: 'Szabad időpont?',
+    h1: 'Ébredj a tó partján.',
+    lede: 'Hat hangulatos szoba, saját stég és házi reggeli. Két perc a víz.',
+    heroAlt: 'Faborítású vendégház egy nyugodt hegyi tó partján, őszi fák között',
+    planTitle: 'Tervezd meg a pihenést',
+    guests: 'Vendégek',
+    nights: 'Éjszakák',
+    room: 'Szoba',
+    less: 'Kevesebb',
+    more: 'Több',
+    estimate: 'Az árad',
+    breakfast: 'A reggeli benne van',
+    tooMany: (n: number) => `Ebben a szobában legfeljebb ${n} fő alszik. Próbáld a tetőtéri családi szobát.`,
+    askFree: 'Érdeklődöm',
+    perNight: 'éjszakánként',
+    sleeps: (n: number) => `${n} fő`,
+    chooseRoom: 'Ezt a szobát kérem',
+    roomsTitle: 'Szobáink',
+    rooms: [
+      { id: 'lake', name: 'Tó szoba', rate: 26000, cap: 2, note: 'Két ágy, kilátás a tóra és reggeli napfény.', img: 'twin', alt: 'Világos hálószoba két kovácsoltvas ággyal, faburkolattal és nagy ablakokkal' },
+      { id: 'attic', name: 'Tetőtéri családi szoba', rate: 34000, cap: 4, note: 'Hely az egész családnak a tető alatt.', img: 'attic', alt: 'Hangulatos tetőtéri szoba ferde fehér mennyezettel, ablakkal és puha párnákkal' },
+      { id: 'garden', name: 'Kerti franciaágyas', rate: 22000, cap: 2, note: 'Csendes, saját, közvetlenül a kert mellett.', img: 'bed', alt: 'Gondosan bevetett franciaágy fehér ágyneművel és kötél talpú éjjeli lámpával' },
+    ],
+    incTitle: 'Minden foglalásban benne van',
+    inc: ['Házi reggeli', 'Ingyenes parkolás', 'Wi-Fi', 'Kölcsönkerékpár', 'Saját stég'],
+    nearTitle: 'A környék',
+    near: [
+      ['Strand', '2 perc séta'],
+      ['Pékség', '5 perc séta'],
+      ['Borospince', '10 perc séta'],
+      ['Buszmegálló', '4 perc séta'],
+      ['Faluközpont', '12 perc séta'],
+    ],
+    dockAlt: 'Két faszék egy napsütötte tóparti stégen',
+    pierAlt: 'Fa stég nyúlik be a nyugodt tóba naplementekor',
+    checkTitle: 'Jó tudni',
+    check: [
+      ['Érkezés', '14:00-tól'],
+      ['Távozás', '10:00-ig'],
+      ['Háziállat', 'Szívesen látjuk, csak szólj'],
+    ],
+    address: ['Tópart sétány 18.', 'Ingyenes parkolás a háznál'],
+    actions: ['Kérdezek', 'Hívás', 'Térkép'],
+    footer: ['A Tópart kitalált vállalkozás. Ezt a mintaoldalt tervezte és készítette:', 'Fotók: Unsplash.'],
+  },
+}[lang];
+
+const roomImg = { twin, attic, bed };
+const ft = (n: number) => `${n.toLocaleString('hu-HU').replace(/\s/g, ' ')} Ft`;
+const planner = {
+  rooms: copy.rooms.map((r) => ({ id: r.id, name: r.name, rate: r.rate, cap: r.cap, tooMany: copy.tooMany(r.cap) })),
+  nightsWord: lang === 'hu' ? 'éjszaka' : ['night', 'nights'],
+  guestsWord: lang === 'hu' ? 'fő' : ['guest', 'guests'],
+};
+---
+
+<Base title={copy.title} description={copy.description} noindex themeColor="#f5efe4">
+  <ConceptBar business="Tópart" />
+
+  <div class="tp">
+    <header class="top">
+      <div class="wrap top-inner">
+        <a href="#top" class="logo" aria-label="Tópart">
+          <span class="wave" aria-hidden="true"><svg viewBox="0 0 32 20"><path d="M2 8c4-4 8-4 12 0s8 4 12 0M2 15c4-4 8-4 12 0s8 4 12 0" /></svg></span>
+          <span>Tópart<small>{copy.tagline}</small></span>
+        </a>
+        <nav class="nav" aria-label="Tópart">
+          <a href="#rooms">{copy.nav[0]}</a>
+          <a href="#plan">{copy.nav[1]}</a>
+          <a href="#around">{copy.nav[2]}</a>
+        </nav>
+        <a href="#plan" class="btn btn-small">{copy.ask}</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <Picture src={hero} alt={copy.heroAlt} formats={['avif', 'webp']} quality={62} widths={[640, 960, 1400, 1800]} sizes="100vw" loading="eager" fetchpriority="high" class="hero-img" />
+        <div class="wrap hero-inner">
+          <h1>{copy.h1}</h1>
+          <p class="lede">{copy.lede}</p>
+        </div>
+      </section>
+
+      <section id="plan" class="plan" aria-labelledby="plan-title">
+        <div class="wrap">
+          <form class="planner" data-planner={JSON.stringify(planner)} onsubmit="return false">
+            <h2 id="plan-title">{copy.planTitle}</h2>
+            <div class="plan-grid">
+              <div class="stepper">
+                <label for="tp-guests">{copy.guests}</label>
+                <div class="stepper-row">
+                  <button type="button" data-step="-1" data-for="tp-guests" aria-label={`${copy.less} ${copy.guests.toLowerCase()}`}><Icon name="minus" /></button>
+                  <input id="tp-guests" name="guests" type="number" inputmode="numeric" min="1" max="6" value="2" />
+                  <button type="button" data-step="1" data-for="tp-guests" aria-label={`${copy.more} ${copy.guests.toLowerCase()}`}><Icon name="plus" /></button>
+                </div>
+              </div>
+              <div class="stepper">
+                <label for="tp-nights">{copy.nights}</label>
+                <div class="stepper-row">
+                  <button type="button" data-step="-1" data-for="tp-nights" aria-label={`${copy.less} ${copy.nights.toLowerCase()}`}><Icon name="minus" /></button>
+                  <input id="tp-nights" name="nights" type="number" inputmode="numeric" min="1" max="14" value="2" />
+                  <button type="button" data-step="1" data-for="tp-nights" aria-label={`${copy.more} ${copy.nights.toLowerCase()}`}><Icon name="plus" /></button>
+                </div>
+              </div>
+              <fieldset class="room-pick">
+                <legend>{copy.room}</legend>
+                <div class="room-pills">
+                  {
+                    copy.rooms.map((r, i) => (
+                      <label>
+                        <input type="radio" name="room" value={r.id} checked={i === 0} />
+                        <span>{r.name}</span>
+                      </label>
+                    ))
+                  }
+                </div>
+              </fieldset>
+            </div>
+            <div class="estimate" aria-live="polite" hidden data-estimate>
+              <p class="est-label">{copy.estimate}</p>
+              <p class="est-total" data-total></p>
+              <p class="est-detail" data-detail></p>
+              <p class="est-warn" data-warn hidden></p>
+              <p class="est-inc"><Icon name="check" />{copy.breakfast}</p>
+            </div>
+            <button type="button" class="btn btn-big" data-preview-kind="book"><Icon name="calendar" />{copy.askFree}</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="rooms" class="rooms" aria-labelledby="rooms-title">
+        <div class="wrap">
+          <h2 id="rooms-title">{copy.roomsTitle}</h2>
+          <ul class="room-grid">
+            {
+              copy.rooms.map((r) => (
+                <li>
+                  <Picture src={roomImg[r.img as keyof typeof roomImg]} alt={r.alt} formats={['avif', 'webp']} quality={64} widths={[400, 640, 800]} sizes="(min-width: 60rem) 30vw, 92vw" />
+                  <div class="room-body">
+                    <p class="cap"><Icon name="check" />{copy.sleeps(r.cap)}</p>
+                    <h3>{r.name}</h3>
+                    <p>{r.note}</p>
+                    <p class="rate">
+                      {ft(r.rate)} <span>{copy.perNight}</span>
+                    </p>
+                    <button type="button" class="btn btn-line" data-choose-room={r.id}>{copy.chooseRoom}</button>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="inc">
+        <div class="wrap">
+          <h2>{copy.incTitle}</h2>
+          <ul>
+            {copy.inc.map((i) => <li><Icon name="check" />{i}</li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section id="around" class="around" aria-labelledby="around-title">
+        <div class="wrap around-grid">
+          <div>
+            <h2 id="around-title">{copy.nearTitle}</h2>
+            <ul class="near">
+              {
+                copy.near.map(([place, time]) => (
+                  <li>
+                    <span>{place}</span>
+                    <strong>{time}</strong>
+                  </li>
+                ))
+              }
+            </ul>
+            <h3 class="check-title">{copy.checkTitle}</h3>
+            <dl class="check">
+              {copy.check.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+            </dl>
+            <address><strong>{copy.address[0]}</strong>{copy.address[1]}</address>
+          </div>
+          <div class="gallery">
+            <Picture src={dock} alt={copy.dockAlt} formats={['avif', 'webp']} quality={62} widths={[400, 640, 900]} sizes="(min-width: 60rem) 40vw, 92vw" class="g1" />
+            <Picture src={pier} alt={copy.pierAlt} formats={['avif', 'webp']} quality={62} widths={[400, 640, 900]} sizes="(min-width: 60rem) 40vw, 92vw" class="g2" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot wrap">
+      <p class="logo-text">Tópart</p>
+      <p>{copy.footer[0]}{' '}<a href={localePath(lang, '/')}>Mojtaba Maleki</a>. {copy.footer[1]}</p>
+    </footer>
+  </div>
+
+  <ActionBar
+    bg="#fffdf9"
+    fg="#16384e"
+    primaryBg="#1f5f8b"
+    primaryFg="#ffffff"
+    actions={[
+      { icon: 'calendar', label: copy.actions[0], href: '#plan' },
+      { icon: 'phone', label: copy.actions[1], preview: 'call' },
+      { icon: 'map', label: copy.actions[2], preview: 'map' },
+    ]}
+  />
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-planner]');
+  if (form) {
+    type Room = { id: string; name: string; rate: number; cap: number; tooMany: string };
+    const cfg = JSON.parse(form.dataset.planner!) as { rooms: Room[]; nightsWord: string | string[]; guestsWord: string | string[] };
+    const word = (w: string | string[], n: number) => (Array.isArray(w) ? w[n === 1 ? 0 : 1] : w);
+    const ft = (n: number) => `${n.toLocaleString('hu-HU').replace(/\s/g, ' ')} Ft`;
+    const guests = form.querySelector<HTMLInputElement>('#tp-guests')!;
+    const nights = form.querySelector<HTMLInputElement>('#tp-nights')!;
+    const est = form.querySelector<HTMLElement>('[data-estimate]')!;
+    const clamp = (el: HTMLInputElement) => {
+      const v = Math.round(Number(el.value) || 1);
+      el.value = String(Math.min(Number(el.max), Math.max(Number(el.min), v)));
+    };
+    const update = () => {
+      clamp(guests);
+      clamp(nights);
+      const id = form.querySelector<HTMLInputElement>('input[name=room]:checked')?.value;
+      const room = cfg.rooms.find((r) => r.id === id) ?? cfg.rooms[0];
+      const g = Number(guests.value);
+      const n = Number(nights.value);
+      est.querySelector('[data-total]')!.textContent = ft(room.rate * n);
+      est.querySelector('[data-detail]')!.textContent = `${room.name} · ${n} ${word(cfg.nightsWord, n)} · ${g} ${word(cfg.guestsWord, g)}`;
+      const warn = est.querySelector<HTMLElement>('[data-warn]')!;
+      warn.hidden = g <= room.cap;
+      warn.textContent = room.tooMany;
+      form.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) => {
+        const input = form.querySelector<HTMLInputElement>(`#${b.dataset.for}`)!;
+        const step = Number(b.dataset.step);
+        b.disabled = step < 0 ? Number(input.value) <= Number(input.min) : Number(input.value) >= Number(input.max);
+      });
+    };
+    form.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-step]');
+      if (!b) return;
+      const input = form.querySelector<HTMLInputElement>(`#${b.dataset.for}`)!;
+      input.value = String(Number(input.value) + Number(b.dataset.step));
+      update();
+    });
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    // "Choose this room" buttons fill in the planner and bring you back to it.
+    document.querySelectorAll<HTMLButtonElement>('[data-choose-room]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const r = form.querySelector<HTMLInputElement>(`input[name=room][value="${b.dataset.chooseRoom}"]`);
+        if (r) r.checked = true;
+        update();
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }),
+    );
+    est.hidden = false;
+    update();
+  }
+</script>
+
+<style>
+  .tp {
+    --lake: #1f5f8b;
+    --lake-ink: #164766;
+    --sand: #f5efe4;
+    --paper: #fffdf9;
+    --pine: #22413a;
+    --ink: #16262e;
+    --text: #3b4950;
+    --sun: #f2a541;
+    --rule: rgb(22 38 46 / 0.13);
+    background: var(--sand);
+    color: var(--text);
+    font-family: 'Mulish Variable', ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .wrap {
+    width: min(100% - 2.5rem, 72rem);
+    margin-inline: auto;
+  }
+  h1,
+  h2,
+  h3,
+  .logo,
+  .logo-text {
+    color: var(--ink);
+    font-family: 'Marcellus', Georgia, serif;
+    font-weight: 400;
+    line-height: 1.08;
+  }
+  h2 {
+    font-size: clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.5rem;
+    padding: 0.8rem 1.6rem;
+    border: 2px solid var(--lake);
+    border-radius: 0.75rem;
+    background: var(--lake);
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+  .btn:hover {
+    background: var(--lake-ink);
+    border-color: var(--lake-ink);
+  }
+  .btn :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2.2;
+  }
+  .btn-line {
+    background: transparent;
+    color: var(--lake-ink);
+  }
+  .btn-line:hover {
+    color: #fff;
+  }
+  .btn-small {
+    min-height: 2.9rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 1rem;
+  }
+  .btn-big {
+    width: 100%;
+    min-height: 4rem;
+    margin-top: 1.25rem;
+    font-size: 1.2rem;
+  }
+  .tp :focus-visible {
+    outline: 3px solid var(--sun);
+    outline-offset: 3px;
+  }
+
+  /* Header */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(245 239 228 / 0.96);
+    border-bottom: 1px solid var(--rule);
+  }
+  .top-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 1.7rem;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .logo small {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--lake);
+    font-family: 'Mulish Variable', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .wave {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--lake);
+  }
+  .wave svg {
+    width: 1.6rem;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+  }
+  .nav {
+    display: none;
+    gap: 2rem;
+  }
+  .nav a {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .nav a:hover {
+    color: var(--lake);
+  }
+  @media (min-width: 62rem) {
+    .nav {
+      display: flex;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .top .btn-small {
+      display: none;
+    }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    display: grid;
+    min-height: min(78vh, 46rem);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero > :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 60%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgb(10 30 45 / 0.72) 0%, rgb(10 30 45 / 0.45) 40%, rgb(10 30 45 / 0.05) 65%, rgb(10 30 45 / 0.5) 100%);
+  }
+  .hero-inner {
+    align-self: start;
+    padding-block: clamp(3rem, 8vw, 6rem) 6rem;
+    color: #fff;
+    text-shadow: 0 2px 20px rgb(0 0 0 / 0.35);
+  }
+  .hero h1 {
+    max-width: 12ch;
+    color: #fff;
+    font-size: clamp(3rem, 1.6rem + 6vw, 6.5rem);
+    line-height: 0.98;
+  }
+  .lede {
+    max-width: 30rem;
+    margin-top: 1.25rem;
+    font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+    font-weight: 600;
+  }
+
+  /* Planner */
+  .plan {
+    position: relative;
+    z-index: 2;
+    margin-top: -5rem;
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .planner {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 1.5rem;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -30px rgb(10 30 45 / 0.45), 0 0 0 1px var(--rule);
+  }
+  .plan-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 52rem) {
+    .plan-grid {
+      grid-template-columns: 1fr 1fr 2fr;
+      align-items: end;
+    }
+  }
+  .stepper label,
+  .room-pick legend {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .stepper-row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr 3.5rem;
+    gap: 0.5rem;
+  }
+  .stepper-row button {
+    display: grid;
+    place-items: center;
+    height: 3.5rem;
+    border: 2px solid var(--lake);
+    border-radius: 0.75rem;
+    background: #fff;
+    color: var(--lake);
+    cursor: pointer;
+  }
+  .stepper-row button:disabled {
+    border-color: var(--rule);
+    color: #a7b0b4;
+    cursor: not-allowed;
+  }
+  .stepper-row button :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 2.6;
+  }
+  .stepper-row input {
+    width: 100%;
+    height: 3.5rem;
+    border: 2px solid var(--rule);
+    border-radius: 0.75rem;
+    background: var(--sand);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .stepper-row input::-webkit-inner-spin-button,
+  .stepper-row input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  .room-pick {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .room-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .room-pills label {
+    position: relative;
+    flex: 1 1 9rem;
+  }
+  .room-pills input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .room-pills span {
+    display: grid;
+    place-items: center;
+    min-height: 3.5rem;
+    padding: 0.4rem 0.75rem;
+    border: 2px solid var(--rule);
+    border-radius: 0.75rem;
+    color: var(--ink);
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .room-pills input:checked + span {
+    border-color: var(--lake);
+    background: #e5eff6;
+    color: var(--lake-ink);
+  }
+  .room-pills input:focus-visible + span {
+    outline: 3px solid var(--sun);
+    outline-offset: 2px;
+  }
+  .estimate {
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--pine);
+    color: #d9e6e1;
+  }
+  .estimate[hidden] {
+    display: none;
+  }
+  .est-label {
+    font-weight: 700;
+  }
+  .est-total {
+    color: #fff;
+    font-size: clamp(2.2rem, 1.8rem + 1.6vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .est-detail {
+    color: #fff;
+    font-weight: 700;
+  }
+  .est-warn {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 0.6rem;
+    background: var(--sun);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .est-warn[hidden] {
+    display: none;
+  }
+  .est-inc {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .est-inc :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+    stroke-width: 2.6;
+  }
+
+  /* Rooms */
+  .rooms {
+    padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
+  }
+  .room-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 56rem) {
+    .room-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .room-grid li {
+    overflow: hidden;
+    border-radius: 1.5rem;
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .room-grid :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .room-body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.4rem 1.4rem 1.6rem;
+  }
+  .cap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--lake);
+    font-weight: 800;
+  }
+  .cap :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    stroke-width: 2.6;
+  }
+  .room-body h3 {
+    font-size: 1.75rem;
+  }
+  .rate {
+    color: var(--ink);
+    font-size: 1.4rem;
+    font-weight: 900;
+  }
+  .rate span {
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* Included */
+  .inc {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    background: var(--lake);
+  }
+  .inc h2 {
+    color: #fff;
+  }
+  .inc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding: 0;
+    list-style: none;
+  }
+  .inc li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--lake-ink);
+    font-weight: 800;
+  }
+  .inc :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+    stroke-width: 2.6;
+  }
+
+  /* Around */
+  .around {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+  .around-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 56rem) {
+    .around-grid {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 4rem;
+    }
+  }
+  .near {
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+  .near li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .near strong {
+    color: var(--lake);
+  }
+  .check-title {
+    margin-top: 2.5rem;
+    font-size: 1.6rem;
+  }
+  .check {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .check div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .check dt {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  address {
+    display: grid;
+    margin-top: 2rem;
+    font-style: normal;
+  }
+  address strong {
+    color: var(--ink);
+    font-size: 1.4rem;
+  }
+  .gallery {
+    display: grid;
+    gap: 1rem;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 1.5rem;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 2rem 2.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.95rem;
+  }
+  .logo-text {
+    font-size: 1.5rem;
+  }
+  .foot a {
+    color: var(--ink);
+    font-weight: 800;
+  }
+</style>
